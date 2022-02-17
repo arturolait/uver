@@ -16,6 +16,7 @@ profesionalObj.antiguedad = 0;
 profesionalObj.fechaContratacion = "";
 profesionalObj.formacionAcademica = [];
 profesionalObj.capacitacionDocente = [];
+profesionalObj.gestionAcademica = [];
 profesionalObj.actualizacionDis = [];
 profesionalObj.productoAcademico = [];
 profesionalObj.logrosProfesionales = [];

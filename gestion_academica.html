@@ -102,6 +102,60 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.capacitacionDocente.length == 0){
+                        consultaCapacitacionById();   
+                    }else{
+                        initData();
+                    }                 
+                }
+
+                $("#agregarCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/gestion_academica/registraGestionAcademica.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.gestionAcademica = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    $("#frmDataInfo")[0].reset();
+                    
+                    return false;
+                });
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    var num = 1;
+                    $.each(profesionalObj.capacitacionDocente , function(key, formacion){
+                        var titulo = formacion.tipo == 1? "Capacitación docente":"Actualización disiplinar";
+                        var tr = "<tr>"+
+                                    "<th>"+(num++)+"</th>"+
+                                    "<td>"+titulo+"</td>"+
+                                    "<td>"+formacion.titulo+"</td>"+
+                                    "<td>"+formacion.instituto+"</td>"+
+                                    "<td>"+formacion.pais+"</td>"+
+                                    "<td>"+formacion.yearObtencion+"</td>"+
+                                    "<td>"+formacion.noHoras+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                    "</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                }
+
+                //*******
                 
                 var ArrList = [];
 
