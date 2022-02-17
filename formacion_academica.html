@@ -1,0 +1,280 @@
+
+        <div class="container">
+            <div class="row pt-5 g-5">
+                <div class="col-md-12">
+                    <h4 class="mb-3">Formacion Academica</h4>
+                    <form id="frmDataInfo" class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="row mt-2">
+                                <div class="col-sm-3">
+                                    <label for="nivel" class="form-label">Nivel academico *</label>
+                                    <select class="form-select ValidChange" id="nivel" name="nivel" required>
+                                        <option value="">Elige un nivel ...</option>
+                                        <option value="L">L - Licenciatura</option>
+                                        <option value="E">E - Especialidad</option>
+                                        <option value="M">M - Maestria</option>
+                                        <option value="D">D - Doctorado</option>
+                                    </select>
+                                    <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
+                                    <input class="form-control" id="identificador" name="identificador" type="hidden">
+                                </div>
+
+                                <div class="col-9">
+                                    <label for="titulo" class="form-label">Titulo obtenido *</label>
+                                    <input type="text" class="form-control ValidChange" id="titulo" name="titulo" placeholder="">
+                                    <div class="invalid-feedback">
+                                        El titulo es obligatorio
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-4">
+                                    <label for="institucion" class="form-label">Institucion academica *</label>
+                                    <input type="text" class="form-control ValidChange" id="institucion" name="institucion" placeholder="">
+                                    <div class="invalid-feedback">
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <label for="pais" class="form-label">Pais *</label>
+                                    <input type="text" class="form-control ValidChange" id="pais" name="pais">
+                                    <div class="invalid-feedback">
+                                        por favor capture su fecha de nacimiento.
+                                    </div>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="yearObtencion" class="form-label">Año de obtención *</label>
+                                    <input type="number" class="form-control ValidChange" id="yearObtencion" name="yearObtencion" placeholder="" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="cedula" class="form-label">Cédula Profesional *</label>
+                                    <input type="number" class="form-control ValidChange" id="cedula" name="cedula" required>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-primary btn-lg" id="actualizaCtn" type="submit" style="display: none;">Actualizar</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()" style="display: none;">Cancelar</button>
+                            </div>
+                        </div>
+                        <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
+                        <div class="row mt-4">
+                            <div>
+                                <div class="bd-example">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Nivel</th>
+                                                <th scope="col">Titulo</th>
+                                                <th scope="col">Instituto</th>
+                                                <th scope="col">Pais</th>
+                                                <th scope="col">Año de obtención</th>
+                                                <th scope="col">Cédula Profesional</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ctnBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+ 
+            $(document).ready(function() {
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.formacionAcademica.length == 0){
+                        consultaFormacionById();   
+                    }else{
+                        initData();
+                    }                 
+                }               
+
+                $("#agregarCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/formacion_academica/registraFormacion.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.formacionAcademica = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    $("#frmDataInfo")[0].reset();
+
+                    return false;
+                });
+
+                $("#actualizaCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/formacion_academica/actualizaFormacion.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.formacionAcademica = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    resetFormulario();
+
+                    return false;
+                });
+
+                function consultaFormacionById(){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/formacion_academica/consultaFormacion.php"
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.formacionAcademica = result.data;
+
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    $.each(profesionalObj.formacionAcademica , function(key, capacitacion){
+                        var tr = "<tr>"+
+                                    "<td>#</td>"+
+                                    "<th>"+capacitacion.nivel+"</th>"+
+                                    "<td>"+capacitacion.titulo+"</td>"+
+                                    "<td>"+capacitacion.instituto+"</td>"+
+                                    "<td>"+capacitacion.pais+"</td>"+
+                                    "<td>"+capacitacion.yearObtencion+"</td>"+
+                                    "<td>"+capacitacion.noCedula+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                    "</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                }
+
+                $(".ValidChange").change(function(){
+                    var ilegalElement = 0;
+                    $(".ValidChange").each(function() {
+                        if($(this).val() == ""){
+                            ilegalElement++;                            
+                        }
+                    });
+                    var disabled = (ilegalElement > 0)? true: false;
+                    $("#agregarCtn").prop( "disabled", disabled );
+                });
+
+
+            });
+
+            function eliminaRow(idKey){
+                var listDatos = profesionalObj.formacionAcademica;
+                var item = listDatos[idKey];
+                
+                $("#keyProfesor").val(profesionalObj.profesionalKey);
+                $.ajax({
+                    method: "POST",
+                    url: "controller/formacion_academica/eliminaFormacion.php",
+                    data: { "formacion_key": item.formacion_key, "persona_fkey": item.persona_fkey }
+                })
+                .done(function( result ) {
+                    if(result.status == "success"){
+                        $("#ctnBody").empty();
+                        $.each(result.data , function(key, capacitacion){
+                            var tr = "<tr>"+
+                                        "<td>#</td>"+
+                                        "<th>"+capacitacion.nivel+"</th>"+
+                                        "<td>"+capacitacion.titulo+"</td>"+
+                                        "<td>"+capacitacion.instituto+"</td>"+
+                                        "<td>"+capacitacion.pais+"</td>"+
+                                        "<td>"+capacitacion.yearObtencion+"</td>"+
+                                        "<td>"+capacitacion.noCedula+"</td>"+
+                                        "<td>"+
+                                            "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                            "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                        "</td>"+
+                                    "</tr>";
+                            $("#ctnBody").append(tr);
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
+
+                return false;
+                
+            }
+
+            function actualizaRow(idKey){
+                var listDatos = profesionalObj.formacionAcademica;
+                var item = listDatos[idKey];
+
+                $("#identificador").val(item.formacion_key);
+                $("#nivel").val(item.nivel);
+                $("#titulo").val(item.titulo);
+                $("#institucion").val(item.instituto);
+                $("#pais").val(item.pais);
+                $("#yearObtencion").val(item.yearObtencion);
+                $("#cedula").val(item.noCedula);
+
+                $("#agregarCtn").css("display", "none");
+                $("#actualizaCtn").css("display", "block");
+                $("#CancelarCtn").css("display", "block");
+                
+            }
+
+            function resetFormulario(){
+                $("#frmDataInfo")[0].reset();
+
+                $("#agregarCtn").css("display", "block");
+                $("#actualizaCtn").css("display", "none");
+                $("#CancelarCtn").css("display", "none");
+            }
+        </script>

@@ -1,0 +1,107 @@
+    
+        <div class="container">
+            <div class="row pt-5 g-5">
+                <div class="col-md-12">
+                    <h4 class="mb-3">Experiencia en diseño ingenieril</h4>
+                    <form id="formRegistro" class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="row mt-2">
+
+                                <div class="col-9">
+                                    <label for="organismo" class="form-label">organismo</label>
+                                    <input type="text" class="form-control ValidCahnge" id="organismo" name="organismo" placeholder="">
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-2">
+
+                                <div class="col-2">
+                                    <label for="periodo" class="form-label">Periodo (Años)</label>
+                                    <input type="number" class="form-control ValidCahnge" id="periodo" name="periodo" placeholder="" required>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="nivel" class="form-label">Nivel de Experiencia *</label>
+                                    <input type="number" class="form-control ValidCahnge" id="nivel" name="nivel" placeholder="" required>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-9"></div>
+                            <div class="col-md-3">
+                                <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                            </div>
+                        </div>
+                        <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
+                        <div class="row mt-4">
+                            <div>
+                                <div class="bd-example">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Organizmo</th>
+                                                <th scope="col">Periodo</th>
+                                                <th scope="col">Nivel de exp.</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ctnBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                var ArrList = [];
+
+                $("#agregarCtn").click(function(){
+                    $("#ctnBody").empty();
+                    var actualizacion = {"organismo": $("#organismo").val(), "periodo": $("#periodo").val(), "nivel": $("#nivel").val()};
+                    ArrList.push(actualizacion);
+
+                    ArrList.forEach(elemento => {
+                        var tr = "<tr>"+
+                                    "<td>#</td>"+
+                                    "<th>"+elemento.organismo+"</th>"+
+                                    "<td>"+elemento.periodo+"</td>"+
+                                    "<td>"+elemento.nivel+"</td>"+
+                                    "<td>modificar</td>"+
+                                    "<td>eliminar</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                    $("#formRegistro")[0].reset();
+
+                    return false;
+                });
+
+                $(".ValidCahnge").change(function(){
+                    var ilegalElement = 0;
+                    $(".ValidCahnge").each(function() {
+                        if($(this).val() == ""){
+                            ilegalElement++;                            
+                        }
+                    });
+                    var disabled = (ilegalElement > 0)? true: false;
+                    $("#agregarCtn").prop( "disabled", disabled );
+                });
+
+
+
+            });
+        </script>
+        

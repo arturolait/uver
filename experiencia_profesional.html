@@ -1,0 +1,139 @@
+    
+        <div class="container">
+            <div class="row pt-5 g-5">
+                <div class="col-md-12">
+                    <h4 class="mb-3">Experiencia profesional no académica</h4>
+                    <form id="formRegistro" class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="row mt-2">
+
+                                <div class="col-9">
+                                    <label for="tipo" class="form-label">actividad o puesto</label>
+                                    <input type="text" class="form-control ValidCahnge" id="tipo" name="tipo" placeholder="">
+                                </div>
+
+                            </div>
+
+                            <div class="row align-items-end mt-2">
+                                <div class="col-5">
+                                    <label for="empresa" class="form-label">Organizacion o empresa</label>
+                                    <input type="text" class="form-control ValidCahnge" id="empresa" name="empresa" placeholder="">
+                                    <div class="invalid-feedback">
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <label for="pais" class="form-label">fecha de inicio</label>
+                                    <input type="text" id="fechaInicio" name="fechaInicio" class="form-control" value="">
+                                    <script type="text/javascript">
+                                        $(function() {
+                                            $('input[name="fechaInicio"]').daterangepicker({
+                                                singleDatePicker: true,
+                                                showDropdowns: true,
+                                                minYear: 1901,
+                                                maxYear: parseInt(moment().format('YYYY'),10)
+                                            });
+                                        });
+                                    </script>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="pais" class="form-label">fecha de fin</label>
+                                    <input type="text" id="fechaFinal" name="fechaFinal" class="form-control" value="">
+                                    <script type="text/javascript">
+                                        $(function() {
+                                            $('input[name="fechaFinal"]').daterangepicker({
+                                                singleDatePicker: true,
+                                                showDropdowns: true,
+                                                minYear: 1901,
+                                                maxYear: parseInt(moment().format('YYYY'),10)
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-9"></div>
+                            <div class="col-md-3">
+                                <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                            </div>
+                        </div>
+                        <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
+                        <div class="row mt-4">
+                            <div>
+                                <div class="bd-example">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Actividad o puesto</th>
+                                                <th scope="col">Empresa</th>
+                                                <th scope="col">fecha inicio</th>
+                                                <th scope="col">Fecha fin</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ctnBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+
+        <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="js/form-validation.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                var ArrList = [];
+
+                $("#agregarCtn").click(function(){
+                    $("#ctnBody").empty();
+                    var capacitacion = {"tipo": $("#tipo").val(), "empresa": $("#empresa").val(), "fechaInicio": $("#fechaInicio").val(), "fechaFin": $("#fechaFinal").val()};
+                    ArrList.push(capacitacion);
+
+                    ArrList.forEach(elemento => {
+                        var tr = "<tr>"+
+                                    "<td>#</td>"+
+                                    "<th>"+elemento.tipo+"</th>"+
+                                    "<td>"+elemento.empresa+"</td>"+
+                                    "<td>"+elemento.fechaInicio+"</td>"+
+                                    "<td>"+elemento.fechaFin+"</td>"+
+                                    "<td>modificar</td>"+
+                                    "<td>eliminar</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                    $("#formRegistro")[0].reset();
+
+                    return false;
+                });
+
+                $(".ValidCahnge").change(function(){
+                    var ilegalElement = 0;
+                    $(".ValidCahnge").each(function() {
+                        if($(this).val() == ""){
+                            ilegalElement++;                            
+                        }
+                    });
+                    var disabled = (ilegalElement > 0)? true: false;
+                    $("#agregarCtn").prop( "disabled", disabled );
+                });
+
+
+
+            });
+        </script>

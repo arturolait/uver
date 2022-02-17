@@ -1,0 +1,220 @@
+    
+        <div class="container">
+            <div class="row pt-5 g-5">
+                <div class="col-md-12">
+                    <h4 class="mb-3">Prodcuto académico relevante</h4>
+                    <form id="frmDataInfo" class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="row mt-2">
+
+                                <div class="col-12">
+                                    <label for="producto" class="form-label">Descripción del prodcuto</label>
+                                    <textarea id="producto" name="producto" class="form-control ValidChange" rows="2" cols="50"></textarea>
+                                    <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
+                                    <input class="form-control" id="identificador" name="identificador" type="hidden">
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-primary btn-lg" id="actualizaCtn" type="submit" style="display: none;">Actualizar</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()" style="display: none;">Cancelar</button>
+                            </div>
+                        </div>
+                        <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
+                        <div class="row mt-4">
+                            <div>
+                                <div class="bd-example">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <td scope="col">Descripcion del producto</td>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ctnBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.productoAcademico.length == 0){
+                        consultaProductoById();   
+                    }else{
+                        initData();
+                    }                 
+                }
+
+                $("#agregarCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/producto_academico/registraProducto.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.productoAcademico = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    $("#frmDataInfo")[0].reset();
+                    return false;
+                });
+
+                $("#actualizaCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/producto_academico/actualizaProducto.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.productoAcademico = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    resetFormulario();
+
+                    return false;
+                });
+
+                function consultaProductoById(){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/producto_academico/consultaProducto.php"
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){                        
+                            profesionalObj.productoAcademico = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    var num = 1;
+                    $.each(profesionalObj.productoAcademico , function(key, producto){
+                        var tr = "<tr>"+
+                                    "<th>"+(num++)+"</th>"+
+                                    "<td>"+producto.descripcion+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                    "</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                }
+
+                $(".ValidChange").change(function(){
+                    var ilegalElement = 0;
+                    $(".ValidChange").each(function() {
+                        if($(this).val() == ""){
+                            ilegalElement++;                            
+                        }
+                    });
+                    var disabled = (ilegalElement > 0)? true: false;
+                    $("#agregarCtn").prop( "disabled", disabled );
+                });
+
+
+            });
+
+            function eliminaRow(idKey){
+                var listDatos = profesionalObj.productoAcademico;
+                var item = listDatos[idKey];
+                
+                $("#keyProfesor").val(profesionalObj.profesionalKey);
+                $.ajax({
+                    method: "POST",
+                    url: "controller/producto_academico/eliminaProducto.php",
+                    data: { "producto_key": item.producto_key,}
+                })
+                .done(function( result ) {
+                    if(result.status == "success"){
+                        $("#ctnBody").empty();
+                        $.each(result.data , function(key, capacitacion){
+                            var tr = "<tr>"+
+                                        "<td>#</td>"+
+                                        "<th>"+capacitacion.nivel+"</th>"+
+                                        "<td>"+capacitacion.titulo+"</td>"+
+                                        "<td>"+capacitacion.instituto+"</td>"+
+                                        "<td>"+capacitacion.pais+"</td>"+
+                                        "<td>"+capacitacion.yearObtencion+"</td>"+
+                                        "<td>"+capacitacion.noCedula+"</td>"+
+                                        "<td>"+
+                                            "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                            "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                        "</td>"+
+                                    "</tr>";
+                            $("#ctnBody").append(tr);
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
+
+                return false;
+                
+            }
+
+            function actualizaRow(idKey){
+                var listDatos = profesionalObj.productoAcademico;
+                var item = listDatos[idKey];
+
+                $("#identificador").val(item.producto_key);
+                $("#producto").val(item.descripcion);
+
+                $("#agregarCtn").css("display", "none");
+                $("#actualizaCtn").css("display", "block");
+                $("#CancelarCtn").css("display", "block");
+                
+            }
+
+            function resetFormulario(){
+                $("#frmDataInfo")[0].reset();
+
+                $("#agregarCtn").css("display", "block");
+                $("#actualizaCtn").css("display", "none");
+                $("#CancelarCtn").css("display", "none");
+            }
+
+        </script>

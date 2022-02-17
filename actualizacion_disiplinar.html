@@ -1,0 +1,167 @@
+    
+        <div class="container">
+            <div class="row pt-5 g-5">
+                <div class="col-md-12">
+                    <h4 class="mb-3">Actualización disiplinar</h4>
+                    <form id="frmDataInfo" class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="row mt-2">
+
+                                <div class="col-9">
+                                    <label for="tipo" class="form-label">tipo de Actualización</label>
+                                    <input type="text" class="form-control ValidChange" id="tipo" name="tipo" placeholder="">
+                                    <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-4">
+                                    <label for="institucion" class="form-label">Institucion</label>
+                                    <input type="text" class="form-control ValidChange" id="institucion" name="institucion" placeholder="">
+                                    <div class="invalid-feedback">
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <label for="pais" class="form-label">Pais</label>
+                                    <input type="text" class="form-control ValidChange" id="pais" name="pais">
+                                    <div class="invalid-feedback">
+                                        por favor capture su fecha de nacimiento.
+                                    </div>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="yearObtencion" class="form-label">Año de obtención</label>
+                                    <input type="number" class="form-control ValidChange" id="yearObtencion" name="yearObtencion" placeholder="" required>
+                                </div>
+
+                                <div class="col-2">
+                                    <label for="nhoras" class="form-label">No. Horas</label>
+                                    <input type="number" class="form-control ValidChange" id="nhoras" name="nhoras" placeholder="" required>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-9"></div>
+                            <div class="col-md-3">
+                                <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                            </div>
+                        </div>
+                        <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
+                        <div class="row mt-4">
+                            <div>
+                                <div class="bd-example">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Tipo de actualización</th>
+                                                <th scope="col">Instituto</th>
+                                                <th scope="col">Pais</th>
+                                                <th scope="col">Año de obtención</th>
+                                                <th scope="col">No. horas</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ctnBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.actualizacionDis.length == 0){
+                        consultaCapacitacionById(profesionalObj.profesionalKey);   
+                    }else{
+                        initData();
+                    }                 
+                }
+
+                $("#agregarCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/actualizacion_disiplinar/registraActualizacion.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.actualizacionDis = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    $("#frmDataInfo")[0].reset();
+                    return false;
+                });
+
+                function consultaCapacitacionById(profesorKey){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/actualizacion_disiplinar/consultaActualizacionDisp.php",
+                        data: {"profesorKey" : profesorKey }
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){                        
+                            profesionalObj.actualizacionDis = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    var num = 1;
+                    $.each(profesionalObj.actualizacionDis , function(key, actualizacion){
+                        var tr = "<tr>"+
+                                    "<th>"+(num++)+"</th>"+
+                                    "<td>"+actualizacion.tipo+"</td>"+
+                                    "<td>"+actualizacion.instituto+"</td>"+
+                                    "<td>"+actualizacion.pais+"</td>"+
+                                    "<td>"+actualizacion.yearObtencion+"</td>"+
+                                    "<td>"+actualizacion.noHoras+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button'>Eliminar</button>"+
+                                    "</td>"+
+                                "</tr>";
+                        $("#ctnBody").append(tr);
+                    });
+
+                }
+
+                $(".ValidChange").change(function(){
+                    var ilegalElement = 0;
+                    $(".ValidChange").each(function() {
+                        if($(this).val() == ""){
+                            ilegalElement++;                            
+                        }
+                    });
+                    var disabled = (ilegalElement > 0)? true: false;
+                    $("#agregarCtn").prop( "disabled", disabled );
+                });
+
+            });
+        </script>
+
