@@ -11,7 +11,7 @@ if(isset($_POST["puesto"]) && isset($_POST["institucion"]) && isset($_POST["fech
     $institucion = $_POST["institucion"];
     $fechfin = $_POST["fechaFinal"];
     $fechini = $_POST["fechaInicio"];
-    $actual = $_POST["actual"];
+    $actual = (empty($_POST["actual"]))? 2:1;
     $keyProfesor = $_POST["keyProfesor"];
 
     $arrayResponse = array("msj" => "", "status" => "error", "data" => null);
