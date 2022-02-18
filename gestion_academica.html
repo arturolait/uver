@@ -8,8 +8,8 @@
                             <div class="row mt-2">
 
                                 <div class="col-9">
-                                    <label for="tipo" class="form-label">actividad o puesto</label>
-                                    <input type="text" class="form-control ValidCahnge" id="tipo" name="tipo" placeholder="">
+                                    <label for="puesto" class="form-label">actividad o puesto</label>
+                                    <input type="text" class="form-control ValidCahnge" id="puesto" name="puesto" placeholder="">
                                     <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
                                     <input class="form-control" id="identificador" name="identificador" type="hidden">
                                 </div>
@@ -135,16 +135,15 @@
                 function initData(){
                     $("#ctnBody").empty();
                     var num = 1;
-                    $.each(profesionalObj.capacitacionDocente , function(key, formacion){
-                        var titulo = formacion.tipo == 1? "Capacitación docente":"Actualización disiplinar";
+                    $.each(profesionalObj.gestionAcademica , function(key, gestion){
+                        var actual = gestion.actual == 1? "Actual":" - ";
                         var tr = "<tr>"+
                                     "<th>"+(num++)+"</th>"+
-                                    "<td>"+titulo+"</td>"+
-                                    "<td>"+formacion.titulo+"</td>"+
-                                    "<td>"+formacion.instituto+"</td>"+
-                                    "<td>"+formacion.pais+"</td>"+
-                                    "<td>"+formacion.yearObtencion+"</td>"+
-                                    "<td>"+formacion.noHoras+"</td>"+
+                                    "<td>"+gestion.puesto+"</td>"+
+                                    "<td>"+gestion.instituto+"</td>"+
+                                    "<td>"+gestion.fechaInicio+"</td>"+
+                                    "<td>"+gestion.fechaFin+"</td>"+
+                                    "<td>"+actual+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -152,39 +151,51 @@
                                 "</tr>";
                         $("#ctnBody").append(tr);
                     });
-
                 }
 
-                //*******
-                
-                var ArrList = [];
-
-                $("#agregarCtn").click(function(){
-                    $("#ctnBody").empty();
-                    var capacitacion = {"tipo": $("#tipo").val(), "institucion": $("#institucion").val(), "fechaInicio": $("#fechaInicio").val(), "fechaFin": $("#fechaFinal").val()};
-                    ArrList.push(capacitacion);
-
-                    ArrList.forEach(elemento => {
-                        var tr = "<tr>"+
-                                    "<td>#</td>"+
-                                    "<th>"+elemento.tipo+"</th>"+
-                                    "<td>"+elemento.institucion+"</td>"+
-                                    "<td>"+elemento.fechaInicio+"</td>"+
-                                    "<td>"+elemento.fechaFin+"</td>"+
-                                    "<td>modificar</td>"+
-                                    "<td>eliminar</td>"+
-                                "</tr>";
-                        $("#ctnBody").append(tr);
+                $("#actualizaCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/gestion_academica/actualizarGestionAcademica.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.gestionAcademica = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
                     });
 
-                    $("#formRegistro")[0].reset();
+                    resetFormulario();
 
                     return false;
                 });
 
-                $(".ValidCahnge").change(function(){
+                function consultaCapacitacionById(){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/gestion_academica/consultaGestionAcademica.php"
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){                        
+                            profesionalObj.gestionAcademica = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
+
+                $(".ValidChange").change(function(){
                     var ilegalElement = 0;
-                    $(".ValidCahnge").each(function() {
+                    $(".ValidChange").each(function() {
                         if($(this).val() == ""){
                             ilegalElement++;                            
                         }
@@ -192,8 +203,73 @@
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
-
-
-
             });
+
+            function eliminaRow(idKey){
+                var listDatos = profesionalObj.gestionAcademica;
+                var item = listDatos[idKey];
+                
+                $("#keyProfesor").val(profesionalObj.profesionalKey);
+                $.ajax({
+                    method: "POST",
+                    url: "controller/gestion_academica/eliminaGestionAcademica.php",
+                    data: { "gestion_key": item.gestion_key, "persona_fkey": item.persona_fkey }
+                })
+                .done(function( result ) {
+                    console.log(result.status);
+                    if(result.status == "success"){
+                        $("#ctnBody").empty();
+                        var num = 1;
+                        $.each(result.data , function(key, gestion){
+                            var actual = gestion.actual == 1? "Actual":" - ";
+                            var tr = "<tr>"+
+                                        "<th>"+(num++)+"</th>"+
+                                        "<td>"+gestion.puesto+"</td>"+
+                                        "<td>"+gestion.instituto+"</td>"+
+                                        "<td>"+gestion.fechaInicio+"</td>"+
+                                        "<td>"+gestion.fechaFin+"</td>"+
+                                        "<td>"+actual+"</td>"+
+                                        "<td>"+
+                                            "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                            "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                        "</td>"+
+                                    "</tr>";
+                            $("#ctnBody").append(tr);
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
+
+                return false;
+                
+            }
+
+            function actualizaRow(idKey){
+                var listDatos = profesionalObj.gestionAcademica;
+                var item = listDatos[idKey];
+
+                $("#identificador").val(item.capacitacion_key);
+                $("#tipo").val(item.tipo);
+                $("#titulo").val(item.titulo);
+                $("#institucion").val(item.instituto);
+                $("#pais").val(item.pais);
+                $("#yearObtencion").val(item.yearObtencion);
+                $("#nhoras").val(item.noHoras);
+
+                $("#agregarCtn").css("display", "none");
+                $("#actualizaCtn").css("display", "block");
+                $("#CancelarCtn").css("display", "block");
+                
+            }
+
+            function resetFormulario(){
+                $("#frmDataInfo")[0].reset();
+
+                $("#agregarCtn").css("display", "block");
+                $("#actualizaCtn").css("display", "none");
+                $("#CancelarCtn").css("display", "none");
+            }
+
         </script>
