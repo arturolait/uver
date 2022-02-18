@@ -156,7 +156,6 @@ class GestionAcademica{
     }
 
     public function consultaByIdFormacion(){
-        `puesto`, `instituto`, `fecha_inicio`, `fecha_fin`, `actual`, `persona_fkey`
         $where = $this->getCondicion();
         $SQL = "SELECT gestion_key, puesto, instituto, fecha_inicio, fecha_fin, actual, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
