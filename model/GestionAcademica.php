@@ -1,4 +1,5 @@
-<?php
+<?php 
+require_once '../../core/DBConnection.php';
 class GestionAcademica{
     private $_tablaName;
     private $conexion;
@@ -44,7 +45,8 @@ class GestionAcademica{
     }
 
     public function setFechaInicio($fechaInicio){
-        $this->fechaInicio = $fechaInicio;
+        $this->fechaInicio = date('Y-m-d',strtotime($fechaInicio));
+        //$this->fechaInicio = $fechaInicio;
     }
 
     public function getFechaInicio(){
@@ -52,11 +54,13 @@ class GestionAcademica{
     }
 
     public function setFechaFin($fechaFin){
-        $this->fechaFin = $fechaFin;
+        $this->fechaFin = date('Y-m-d',strtotime($fechaFin));
+        //$this->fechaFin = $fechaFin;
     }
 
     public function getFechaFin(){
-        return $this->fechaFin;
+        return date('d-m-Y',strtotime($fechaFin));
+        //return $this->fechaFin;
     }
 
     public function setActual($actual){
@@ -141,15 +145,15 @@ class GestionAcademica{
 
     public function consultaByIdProfesor(){
         $where = $this->getCondicion();
-        $SQL = "SELECT gestion_key, puesto, instituto, fecha_inicio, fecha_fin, actual, persona_fkey 
+        $SQL = "SELECT gestion_key, puesto, instituto, DATE_FORMAT(fecha_inicio, '%d/%m/%Y') as fecha_inicio, DATE_FORMAT(fecha_fin, '%d/%m/%Y') as fecha_fin, actual, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
         $arrayFormacion = $result->fetchAll(PDO::FETCH_ASSOC);
         
         $aFormacion = array();
-        foreach($arrayFormacion as $capacitacion){
-            $aFormacion[$capacitacion["gestion_key"]] = $capacitacion;
+        foreach($arrayFormacion as $gestion){
+            $aFormacion[$gestion["gestion_key"]] = $gestion;
         }
         
         return $aFormacion;

@@ -141,8 +141,8 @@
                                     "<th>"+(num++)+"</th>"+
                                     "<td>"+gestion.puesto+"</td>"+
                                     "<td>"+gestion.instituto+"</td>"+
-                                    "<td>"+gestion.fechaInicio+"</td>"+
-                                    "<td>"+gestion.fechaFin+"</td>"+
+                                    "<td>"+gestion.fecha_inicio+"</td>"+
+                                    "<td>"+gestion.fecha_fin+"</td>"+
                                     "<td>"+actual+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
@@ -227,8 +227,8 @@
                                         "<th>"+(num++)+"</th>"+
                                         "<td>"+gestion.puesto+"</td>"+
                                         "<td>"+gestion.instituto+"</td>"+
-                                        "<td>"+gestion.fechaInicio+"</td>"+
-                                        "<td>"+gestion.fechaFin+"</td>"+
+                                        "<td>"+gestion.fecha_inicio+"</td>"+
+                                        "<td>"+gestion.fecha_fin+"</td>"+
                                         "<td>"+actual+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
@@ -251,13 +251,12 @@
                 var listDatos = profesionalObj.gestionAcademica;
                 var item = listDatos[idKey];
 
-                $("#identificador").val(item.capacitacion_key);
-                $("#tipo").val(item.tipo);
+                $("#identificador").val(item.gestion_key);
+                $("#puesto").val(item.puesto);
                 $("#titulo").val(item.titulo);
                 $("#institucion").val(item.instituto);
-                $("#pais").val(item.pais);
-                $("#yearObtencion").val(item.yearObtencion);
-                $("#nhoras").val(item.noHoras);
+                $("#fechaInicio").val(item.fecha_inicio);
+                $("#fechaFinal").val(item.fecha_fin);
 
                 $("#agregarCtn").css("display", "none");
                 $("#actualizaCtn").css("display", "block");

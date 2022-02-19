@@ -5,7 +5,7 @@ require_once '../../core/constants.php';
 
 
 if(isset($_POST["puesto"]) && isset($_POST["institucion"]) && isset($_POST["fechaFinal"]) && isset($_POST["fechaInicio"]) 
-    && isset($_POST["actual"]) && isset($_POST["keyProfesor"])) {
+    && isset($_POST["keyProfesor"])) {
     
     $puesto = $_POST["puesto"];
     $institucion = $_POST["institucion"];
