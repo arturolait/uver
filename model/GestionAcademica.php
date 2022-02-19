@@ -1,5 +1,6 @@
 <?php 
 require_once '../../core/DBConnection.php';
+
 class GestionAcademica{
     private $_tablaName;
     private $conexion;
@@ -149,14 +150,14 @@ class GestionAcademica{
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
-        $arrayFormacion = $result->fetchAll(PDO::FETCH_ASSOC);
+        $arrayExperiencia = $result->fetchAll(PDO::FETCH_ASSOC);
         
-        $aFormacion = array();
-        foreach($arrayFormacion as $gestion){
-            $aFormacion[$gestion["gestion_key"]] = $gestion;
+        $aGestion = array();
+        foreach($arrayExperiencia as $gestion){
+            $aGestion[$gestion["gestion_key"]] = $gestion;
         }
         
-        return $aFormacion;
+        return $aGestion;
     }
 
     public function consultaByIdFormacion(){
@@ -165,8 +166,8 @@ class GestionAcademica{
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
-        $arrayFormacion = $result->fetch(PDO::FETCH_ASSOC);
-        return $arrayFormacion;
+        $arrayExperiencia = $result->fetch(PDO::FETCH_ASSOC);
+        return $arrayExperiencia;
     }
 
     /**

@@ -8,8 +8,10 @@
                             <div class="row mt-2">
 
                                 <div class="col-9">
-                                    <label for="tipo" class="form-label">actividad o puesto</label>
-                                    <input type="text" class="form-control ValidCahnge" id="tipo" name="tipo" placeholder="">
+                                    <label for="puesto" class="form-label">Actividad o puesto</label>
+                                    <input type="text" class="form-control ValidChange" id="puesto" name="puesto" placeholder="">
+                                    <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
+                                    <input class="form-control" id="identificador" name="identificador" type="hidden">
                                 </div>
 
                             </div>
@@ -17,14 +19,14 @@
                             <div class="row align-items-end mt-2">
                                 <div class="col-5">
                                     <label for="empresa" class="form-label">Organizacion o empresa</label>
-                                    <input type="text" class="form-control ValidCahnge" id="empresa" name="empresa" placeholder="">
+                                    <input type="text" class="form-control ValidChange" id="empresa" name="empresa" placeholder="">
                                     <div class="invalid-feedback">
                                         
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <label for="pais" class="form-label">fecha de inicio</label>
-                                    <input type="text" id="fechaInicio" name="fechaInicio" class="form-control" value="">
+                                    <label for="pais" class="form-label">Fecha de inicio</label>
+                                    <input type="text" id="fechaInicio" name="fechaInicio" class="form-control ValidChange" value="">
                                     <script type="text/javascript">
                                         $(function() {
                                             $('input[name="fechaInicio"]').daterangepicker({
@@ -38,8 +40,8 @@
                                 </div>
 
                                 <div class="col-2">
-                                    <label for="pais" class="form-label">fecha de fin</label>
-                                    <input type="text" id="fechaFinal" name="fechaFinal" class="form-control" value="">
+                                    <label for="pais" class="form-label">Fecha de fin</label>
+                                    <input type="text" id="fechaFinal" name="fechaFinal" class="form-control ValidChange" value="">
                                     <script type="text/javascript">
                                         $(function() {
                                             $('input[name="fechaFinal"]').daterangepicker({
@@ -96,44 +98,153 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
-                
-                var ArrList = [];
+
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.capacitacionDocente.length == 0){
+                        consultaCapacitacionById();   
+                    }else{
+                        initData();
+                    }                 
+                }
 
                 $("#agregarCtn").click(function(){
-                    $("#ctnBody").empty();
-                    var capacitacion = {"tipo": $("#tipo").val(), "empresa": $("#empresa").val(), "fechaInicio": $("#fechaInicio").val(), "fechaFin": $("#fechaFinal").val()};
-                    ArrList.push(capacitacion);
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_profesional/registraExperienciaProfesional.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.experienciaProfesional = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
 
-                    ArrList.forEach(elemento => {
+                    resetFormulario();
+                    
+                    return false;
+                });
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    var num = 1;
+                    $.each(profesionalObj.experienciaProfesional , function(key, experiencia){
                         var tr = "<tr>"+
-                                    "<td>#</td>"+
-                                    "<th>"+elemento.tipo+"</th>"+
-                                    "<td>"+elemento.empresa+"</td>"+
-                                    "<td>"+elemento.fechaInicio+"</td>"+
-                                    "<td>"+elemento.fechaFin+"</td>"+
-                                    "<td>modificar</td>"+
-                                    "<td>eliminar</td>"+
+                                    "<th>"+(num++)+"</th>"+
+                                    "<td>"+experiencia.puesto+"</td>"+
+                                    "<td>"+experiencia.empresa+"</td>"+
+                                    "<td>"+experiencia.fecha_inicio+"</td>"+
+                                    "<td>"+experiencia.fecha_fin+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                    "</td>"+
                                 "</tr>";
                         $("#ctnBody").append(tr);
                     });
+                }
 
-                    $("#formRegistro")[0].reset();
+                $("#actualizaCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_profesional/actualizarExperienciaProfesional.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.experienciaProfesional = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    resetFormulario();
 
                     return false;
                 });
 
-                $(".ValidCahnge").change(function(){
+                $(".ValidChange").change(function(){
                     var ilegalElement = 0;
-                    $(".ValidCahnge").each(function() {
+                    $(".ValidChange").each(function() {
                         if($(this).val() == ""){
                             ilegalElement++;                            
                         }
                     });
+                    console.log('tenemos '+ilegalElement+' vacios');
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
-
-
-
             });
+
+
+
+            function eliminaRow(idKey){
+                var listDatos = profesionalObj.experienciaProfesional;
+                var item = listDatos[idKey];
+                
+                $("#keyProfesor").val(profesionalObj.profesionalKey);
+                $.ajax({
+                    method: "POST",
+                    url: "controller/experiencia_profesional/eliminaExperienciaProfesional.php",
+                    data: { "experiencia_key": item.experiencia_key, "persona_fkey": item.persona_fkey }
+                })
+                .done(function( result ) {
+                    console.log(result.status);
+                    if(result.status == "success"){
+                        $("#ctnBody").empty();
+                        var num = 1;
+                        $.each(result.data , function(key, experiencia){
+                            var tr = "<tr>"+
+                                        "<th>"+(num++)+"</th>"+
+                                        "<td>"+experiencia.puesto+"</td>"+
+                                        "<td>"+experiencia.empresa+"</td>"+
+                                        "<td>"+experiencia.fecha_inicio+"</td>"+
+                                        "<td>"+experiencia.fecha_fin+"</td>"+
+                                        "<td>"+
+                                            "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                            "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                        "</td>"+
+                                    "</tr>";
+                            $("#ctnBody").append(tr);
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
+
+                return false;
+                
+            }
+
+            function actualizaRow(idKey){
+                var listDatos = profesionalObj.experienciaProfesional;
+                var item = listDatos[idKey];
+
+                $("#identificador").val(item.experiencia_key);
+                $("#puesto").val(item.puesto);
+                $("#empresa").val(item.empresa);
+                $("#fechaInicio").val(item.fecha_inicio);
+                $("#fechaFinal").val(item.fecha_fin);
+
+                $("#agregarCtn").css("display", "none");
+                $("#actualizaCtn").css("display", "block");
+                $("#CancelarCtn").css("display", "block");
+                
+            }
+
+            function resetFormulario(){
+                $("#frmDataInfo")[0].reset();
+
+                $("#agregarCtn").css("display", "block");
+                $("#actualizaCtn").css("display", "none");
+                $("#CancelarCtn").css("display", "none");
+            }
         </script>
