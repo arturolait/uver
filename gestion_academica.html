@@ -32,8 +32,8 @@
                                             $('input[name="fechaInicio"]').daterangepicker({
                                                 singleDatePicker: true,
                                                 showDropdowns: true,
-                                                minYear: parseInt((moment().format('YYYY')-70),10),
-                                                maxYear: parseInt(moment().format('YYYY')-1,10)
+                                                minYear: parseInt((moment().format('YYYY')-50),10),
+                                                maxYear: parseInt(moment().format('YYYY'),10)
                                             });
                                         });
                                     </script>
@@ -47,7 +47,7 @@
                                             $('input[name="fechaFinal"]').daterangepicker({
                                                 singleDatePicker: true,
                                                 showDropdowns: true,
-                                                minYear: parseInt((moment().format('YYYY')-70),10),
+                                                minYear: parseInt((moment().format('YYYY')-50),10),
                                                 maxYear: parseInt(moment().format('YYYY'),10)
                                             });
                                         });
@@ -127,7 +127,7 @@
                         alert( "Peticion fallida failed: " + textStatus );
                     });
 
-                    $("#frmDataInfo")[0].reset();
+                    resetFormulario();
                     
                     return false;
                 });
@@ -257,6 +257,9 @@
                 $("#institucion").val(item.instituto);
                 $("#fechaInicio").val(item.fecha_inicio);
                 $("#fechaFinal").val(item.fecha_fin);
+                if (item.actual == 1 || item.actual == '1') {
+                    $('#actual').attr('checked', true);
+                }
 
                 $("#agregarCtn").css("display", "none");
                 $("#actualizaCtn").css("display", "block");
@@ -266,6 +269,7 @@
 
             function resetFormulario(){
                 $("#frmDataInfo")[0].reset();
+                $('#actual').removeAttr('checked');
 
                 $("#agregarCtn").css("display", "block");
                 $("#actualizaCtn").css("display", "none");

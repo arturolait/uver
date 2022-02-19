@@ -59,7 +59,7 @@ class GestionAcademica{
     }
 
     public function getFechaFin(){
-        return date('d-m-Y',strtotime($fechaFin));
+        return date('d-m-Y',strtotime($this->fechaFin));
         //return $this->fechaFin;
     }
 
