@@ -54,7 +54,8 @@ class ExperienciaProfesional{
     }
 
     public function setFechaInicio($fechaInicio){
-        $this->fechaInicio = $fechaInicio;
+        $this->fechaInicio = date('Y-m-d',strtotime($fechaInicio));
+        //$this->fechaInicio = $fechaInicio;
     }
 
     public function getFechaInicio(){
@@ -62,7 +63,8 @@ class ExperienciaProfesional{
     }
 
     public function setFechaFin($fechaFin){
-        $this->fechaFin = $fechaFin;
+        $this->fechaFin = date('Y-m-d',strtotime($fechaFin));
+        //$this->fechaFin = $fechaFin;
     }
 
     public function getFechaFin(){
@@ -130,7 +132,7 @@ class ExperienciaProfesional{
 
     public function consultaByIdProfesor(){
         $where = $this->getCondicion();
-        $SQL = "SELECT gestion_key, puesto, empresa, DATE_FORMAT(fecha_inicio, '%d/%m/%Y') as fecha_inicio, DATE_FORMAT(fecha_fin, '%d/%m/%Y') as fecha_fin, persona_fkey 
+        $SQL = "SELECT experiencia_key, puesto, empresa, DATE_FORMAT(fecha_inicio, '%d/%m/%Y') as fecha_inicio, DATE_FORMAT(fecha_fin, '%d/%m/%Y') as fecha_fin, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
@@ -138,7 +140,7 @@ class ExperienciaProfesional{
         
         $aExperienca = array();
         foreach($arrayExperiencia as $experienca){
-            $aExperienca[$experienca["gestion_key"]] = $experienca;
+            $aExperienca[$experienca["experiencia_key"]] = $experienca;
         }
         
         return $aExperienca;
@@ -146,7 +148,7 @@ class ExperienciaProfesional{
 
     public function consultaByIdFormacion(){
         $where = $this->getCondicion();
-        $SQL = "SELECT gestion_key, puesto, empresa, fecha_inicio, fecha_fin, persona_fkey 
+        $SQL = "SELECT experiencia_key, puesto, empresa, fecha_inicio, fecha_fin, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();

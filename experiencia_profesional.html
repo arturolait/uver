@@ -2,8 +2,8 @@
         <div class="container">
             <div class="row pt-5 g-5">
                 <div class="col-md-12">
-                    <h4 class="mb-3">Experiencia profesional no académica</h4>
-                    <form id="formRegistro" class="needs-validation" novalidate>
+                    <h4 class="mb-3">Experiencia profesional no académica TT</h4>
+                    <form id="frmDataInfo" class="needs-validation" novalidate>
                         <div class="row g-3">
                             <div class="row mt-2">
 
@@ -32,7 +32,7 @@
                                             $('input[name="fechaInicio"]').daterangepicker({
                                                 singleDatePicker: true,
                                                 showDropdowns: true,
-                                                minYear: 1901,
+                                                minYear: parseInt((moment().format('YYYY')-50),10),
                                                 maxYear: parseInt(moment().format('YYYY'),10)
                                             });
                                         });
@@ -47,7 +47,7 @@
                                             $('input[name="fechaFinal"]').daterangepicker({
                                                 singleDatePicker: true,
                                                 showDropdowns: true,
-                                                minYear: 1901,
+                                                minYear: parseInt((moment().format('YYYY')-50),10),
                                                 maxYear: parseInt(moment().format('YYYY'),10)
                                             });
                                         });
@@ -57,9 +57,13 @@
 
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-9"></div>
-                            <div class="col-md-3">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-primary btn-lg" id="actualizaCtn" type="submit" style="display: none;">Actualizar</button>
+                            </div>
+                            <div class="col-md-2">
                                 <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()" style="display: none;">Cancelar</button>
                             </div>
                         </div>
                         <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
@@ -92,22 +96,20 @@
         </div>
 
 
-        <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
-
-        <script src="js/form-validation.js"></script>
-
         <script type="text/javascript">
             $(document).ready(function() {
+                console.log('cargo ready');
 
                 if(profesionalObj.profesionalKey > 0){
-                    if(profesionalObj.capacitacionDocente.length == 0){
-                        consultaCapacitacionById();   
+                    if(profesionalObj.experienciaProfesional.length == 0){
+                        consultaExperienciaById();   
                     }else{
                         initData();
                     }                 
                 }
 
                 $("#agregarCtn").click(function(){
+                    console.log('aqui estoy');
                     $("#keyProfesor").val(profesionalObj.profesionalKey);
                     $.ajax({
                         method: "POST",
@@ -169,6 +171,24 @@
 
                     return false;
                 });
+
+                function consultaExperienciaById(){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_profesional/consultaExperienciaProfesional.php"
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){                        
+                            profesionalObj.experienciaProfesional = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
 
                 $(".ValidChange").change(function(){
                     var ilegalElement = 0;

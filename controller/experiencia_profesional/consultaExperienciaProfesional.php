@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../model/GestionAcademica.php';
+require_once '../../model/ExperienciaProfesional.php';
 require_once '../../core/constants.php';
 
 $arrayResponse = array("msj" => "La sesion a caducado.", "status" => "error", "data" => null);
@@ -8,17 +8,17 @@ if(isset($_SESSION["profesor"])){
     $dataProfesor = $_SESSION["profesor"];
     $profesorKey = $dataProfesor["profesor_key"];
 
-    $gestion = new GestionAcademica();
-    $gestion->setProfesionalKey($profesorKey);
+    $experiencia = new ExperienciaProfesional();
+    $experiencia->setProfesionalKey($profesorKey);
 
-    $gestion->setCondicion("persona_fkey", $gestion->getProfesionalKey(), IGUAL, NUMERO);
-    $agestion = $gestion->consultaByIdProfesor();
+    $experiencia->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
+    $aexperiencia = $experiencia->consultaByIdProfesor();
 
-    if(!empty($agestion)){
-        if(count($agestion) > 0){
+    if(!empty($aexperiencia)){
+        if(count($aexperiencia) > 0){
             $arrayResponse["msj"] = "Datos del profesor encontrados.";
             $arrayResponse["status"] = "success";
-            $arrayResponse["data"] = $agestion;
+            $arrayResponse["data"] = $aexperiencia;
         }
     }else{
         $arrayResponse["msj"] = "No existe informacion que coincida con el ID proporcionado.";

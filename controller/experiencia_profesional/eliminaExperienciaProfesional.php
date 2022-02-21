@@ -1,31 +1,31 @@
 <?php
 
-require_once '../../model/GestionAcademica.php';
+require_once '../../model/ExperienciaProfesional.php';
 require_once '../../core/constants.php';
 
-if(isset($_POST["gestion_key"]) && isset($_POST["persona_fkey"])){
-    $gestion_key = $_POST["gestion_key"];
+if(isset($_POST["experiencia_key"]) && isset($_POST["persona_fkey"])){
+    $experiencia_key = $_POST["experiencia_key"];
     $persona_fkey = $_POST["persona_fkey"];
 
     $arrayResponse = array("msj" => "", "status" => "error", "data" => null);
 
-    $gestion = new GestionAcademica();
-    $gestion->setGestionKey($gestion_key);
-    $gestion->setProfesionalKey($persona_fkey);
+    $experiencia = new ExperienciaProfesional();
+    $experiencia->setExperienciaKey($experiencia_key);
+    $experiencia->setProfesionalKey($persona_fkey);
 
-    //egregamos condicion sobre el id del profesor
-    $gestion->setCondicion("persona_fkey", $gestion->getProfesionalKey(), IGUAL, NUMERO);
-    $gestion->setCondicion("gestion_key", $gestion->getGestionKey(), IGUAL, NUMERO);
+    // agregamos condicion sobre el id del profesor
+    $experiencia->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
+    $experiencia->setCondicion("experiencia_key", $experiencia->getExperienciaKey(), IGUAL, NUMERO);
 
-    $gestion->eliminaGestion();
+    $experiencia->eliminaExperiencia();
 
-    $gestion->clearCondicion();
-    $gestion->setCondicion("persona_fkey", $gestion->getProfesionalKey(), IGUAL, NUMERO);
-    $agestion = $gestion->consultaByIdProfesor();
+    $experiencia->clearCondicion();
+    $experiencia->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
+    $aexperiencia = $experiencia->consultaByIdProfesor();
 
     $arrayResponse["msj"] = "Se eliminaron correctamente los datos.";
     $arrayResponse["status"] = "success";
-    $arrayResponse["data"] = $agestion;
+    $arrayResponse["data"] = $aexperiencia;
 
 
     header('Content-type: application/json');
