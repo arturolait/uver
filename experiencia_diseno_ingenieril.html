@@ -6,32 +6,39 @@
                     <form id="formRegistro" class="needs-validation" novalidate>
                         <div class="row g-3">
                             <div class="row mt-2">
-
                                 <div class="col-9">
-                                    <label for="organismo" class="form-label">organismo</label>
-                                    <input type="text" class="form-control ValidCahnge" id="organismo" name="organismo" placeholder="">
+                                    <label for="organismo" class="form-label">Organismo</label>
+                                    <input type="text" class="form-control ValidChange" id="organismo" name="organismo" placeholder="">
                                 </div>
-
                             </div>
 
                             <div class="row mt-2">
-
                                 <div class="col-2">
                                     <label for="periodo" class="form-label">Periodo (Años)</label>
-                                    <input type="number" class="form-control ValidCahnge" id="periodo" name="periodo" placeholder="" required>
+                                    <input type="number" class="form-control ValidChange" id="periodo" name="periodo" placeholder="" required>
                                 </div>
 
                                 <div class="col-2">
                                     <label for="nivel" class="form-label">Nivel de Experiencia *</label>
-                                    <input type="number" class="form-control ValidCahnge" id="nivel" name="nivel" placeholder="" required>
+                                    <select id="nivel" name="nivel" class="form-control ValidChange" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="1">Basico</option>
+                                        <option value="2">Intermedio</option>
+                                        <option value="3">Avanzado</option>
+                                        <option value="4">Master</option>
+                                    </select>
                                 </div>
                             </div>
 
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-9"></div>
-                            <div class="col-md-3">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-primary btn-lg" id="actualizaCtn" type="submit" style="display: none;">Actualizar</button>
+                            </div>
+                            <div class="col-md-2">
                                 <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()" style="display: none;">Cancelar</button>
                             </div>
                         </div>
                         <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
@@ -42,7 +49,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Organizmo</th>
+                                                <th scope="col">Organismo</th>
                                                 <th scope="col">Periodo</th>
                                                 <th scope="col">Nivel de exp.</th>
                                                 <th scope="col"></th>
@@ -64,44 +71,168 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
-                
-                var ArrList = [];
+                if(profesionalObj.profesionalKey > 0){
+                    if(profesionalObj.experienciaDiseno.length == 0){
+                        consultaExperienciaById();   
+                    }else{
+                        initData();
+                    }                 
+                }
 
                 $("#agregarCtn").click(function(){
-                    $("#ctnBody").empty();
-                    var actualizacion = {"organismo": $("#organismo").val(), "periodo": $("#periodo").val(), "nivel": $("#nivel").val()};
-                    ArrList.push(actualizacion);
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_diseno/registraExperienciaDiseno.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.experienciaDiseno = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
 
-                    ArrList.forEach(elemento => {
+                    resetFormulario();
+                    
+                    return false;
+                });
+
+                function initData(){
+                    $("#ctnBody").empty();
+                    var num = 1;
+                    $.each(profesionalObj.experienciaDiseno , function(key, experiencia){
                         var tr = "<tr>"+
-                                    "<td>#</td>"+
-                                    "<th>"+elemento.organismo+"</th>"+
-                                    "<td>"+elemento.periodo+"</td>"+
-                                    "<td>"+elemento.nivel+"</td>"+
-                                    "<td>modificar</td>"+
-                                    "<td>eliminar</td>"+
+                                    "<th>"+(num++)+"</th>"+
+                                    "<td>"+experiencia.organismo+"</td>"+
+                                    "<td>"+experiencia.periodo+"</td>"+
+                                    "<td>"+experiencia.nivel+"</td>"+
+                                    "<td>"+
+                                        "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                        "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                    "</td>"+
                                 "</tr>";
                         $("#ctnBody").append(tr);
                     });
+                }
 
-                    $("#formRegistro")[0].reset();
+                $("#actualizaCtn").click(function(){
+                    $("#keyProfesor").val(profesionalObj.profesionalKey);
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_diseno/actualizarExperienciaDiseno.php",
+                        data: $("#frmDataInfo").serialize()
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){
+                            profesionalObj.experienciaDiseno = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    resetFormulario();
 
                     return false;
                 });
 
-                $(".ValidCahnge").change(function(){
+                function consultaExperienciaById(){
+                    $.ajax({
+                        method: "POST",
+                        url: "controller/experiencia_diseno/consultaExperienciaDiseno.php"
+                    })
+                    .done(function( result ) {
+                        if(result.status == "success"){                        
+                            profesionalObj.experienciaDiseno = result.data;
+                            initData();
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus){
+                        alert( "Peticion fallida failed: " + textStatus );
+                    });
+
+                    return false;
+                }
+
+                $(".ValidChange").change(function(){
                     var ilegalElement = 0;
-                    $(".ValidCahnge").each(function() {
+                    $(".ValidChange").each(function() {
                         if($(this).val() == ""){
                             ilegalElement++;                            
                         }
                     });
+                    console.log('tenemos '+ilegalElement+' vacios');
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
-
-
-
             });
+
+
+
+            function eliminaRow(idKey){
+                var listDatos = profesionalObj.experienciaDiseno;
+                var item = listDatos[idKey];
+                
+                $("#keyProfesor").val(profesionalObj.profesionalKey);
+                $.ajax({
+                    method: "POST",
+                    url: "controller/experiencia_diseno/eliminaExperienciaDiseno.php",
+                    data: { "expediseno_key": item.expediseno_key, "persona_fkey": item.persona_fkey }
+                })
+                .done(function( result ) {
+                    console.log(result.status);
+                    if(result.status == "success"){
+                        $("#ctnBody").empty();
+                        var num = 1;
+                        $.each(result.data , function(key, experiencia){
+                            var tr = "<tr>"+
+                                        "<th>"+(num++)+"</th>"+
+                                        "<td>"+experiencia.organismo+"</td>"+
+                                        "<td>"+experiencia.periodo+"</td>"+
+                                        "<td>"+experiencia.nivel+"</td>"+
+                                        "<td>"+
+                                            "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
+                                            "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
+                                        "</td>"+
+                                    "</tr>";
+                            $("#ctnBody").append(tr);
+                        });
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
+
+                return false;
+                
+            }
+
+            function actualizaRow(idKey){
+                var listDatos = profesionalObj.experienciaDiseno;
+                var item = listDatos[idKey];
+
+                $("#identificador").val(item.expediseno_key);
+                $("#organismo").val(item.organismo);
+                $("#periodo").val(item.periodo);
+                $("#nivel").val(item.nivel);
+
+                $("#agregarCtn").css("display", "none");
+                $("#actualizaCtn").css("display", "block");
+                $("#CancelarCtn").css("display", "block");
+                
+            }
+
+            function resetFormulario(){
+                $("#frmDataInfo")[0].reset();
+
+                $("#agregarCtn").css("display", "block");
+                $("#actualizaCtn").css("display", "none");
+                $("#CancelarCtn").css("display", "none");
+            }
         </script>
         

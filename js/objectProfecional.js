@@ -18,6 +18,7 @@ profesionalObj.formacionAcademica = [];
 profesionalObj.capacitacionDocente = [];
 profesionalObj.gestionAcademica = [];
 profesionalObj.experienciaProfesional = [];
+profesionalObj.experienciaDiseno = [];
 profesionalObj.actualizacionDis = [];
 profesionalObj.productoAcademico = [];
 profesionalObj.logrosProfesionales = [];
