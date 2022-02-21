@@ -55,7 +55,6 @@
                                                 <th scope="col">Periodo</th>
                                                 <th scope="col">Nivel de exp.</th>
                                                 <th scope="col"></th>
-                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="ctnBody">
@@ -72,6 +71,7 @@
         </div>
 
         <script type="text/javascript">
+            var niveles = {'1':'Basico','2':'Intermedio','3':'Avanzado','4':'Master'};
             $(document).ready(function() {
                 if(profesionalObj.profesionalKey > 0){
                     if(profesionalObj.experienciaDiseno.length == 0){
@@ -111,7 +111,7 @@
                                     "<th>"+(num++)+"</th>"+
                                     "<td>"+experiencia.organismo+"</td>"+
                                     "<td>"+experiencia.periodo+"</td>"+
-                                    "<td>"+experiencia.nivel+"</td>"+
+                                    "<td>"+niveles[experiencia.nivel]+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -196,7 +196,7 @@
                                         "<th>"+(num++)+"</th>"+
                                         "<td>"+experiencia.organismo+"</td>"+
                                         "<td>"+experiencia.periodo+"</td>"+
-                                        "<td>"+experiencia.nivel+"</td>"+
+                                        "<td>"+niveles[experiencia.nivel]+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                             "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
