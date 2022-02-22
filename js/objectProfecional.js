@@ -19,6 +19,7 @@ profesionalObj.capacitacionDocente = [];
 profesionalObj.gestionAcademica = [];
 profesionalObj.experienciaProfesional = [];
 profesionalObj.experienciaDiseno = [];
+profesionalObj.participacion = [];
 profesionalObj.actualizacionDis = [];
 profesionalObj.productoAcademico = [];
 profesionalObj.logrosProfesionales = [];

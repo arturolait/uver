@@ -3,13 +3,13 @@
             <div class="row pt-5 g-5">
                 <div class="col-md-12">
                     <h4 class="mb-3">Participación en colegios, cámaras, asociaciones científicas</h4>
-                    <form id="formRegistro" class="needs-validation" novalidate>
+                    <form id="frmDataInfo" class="needs-validation" novalidate>
                         <div class="row g-3">
                             <div class="row mt-2">
 
                                 <div class="col-9">
                                     <label for="organismo" class="form-label">organismo</label>
-                                    <input type="text" class="form-control ValidCahnge" id="organismo" name="organismo" placeholder="">
+                                    <input type="text" class="form-control ValidChange" id="organismo" name="organismo" placeholder="">
                                 </div>
 
                             </div>
@@ -18,20 +18,24 @@
 
                                 <div class="col-2">
                                     <label for="periodo" class="form-label">Periodo (Años)</label>
-                                    <input type="number" class="form-control ValidCahnge" id="periodo" name="periodo" placeholder="" required>
+                                    <input type="number" class="form-control ValidChange" id="periodo" name="periodo" placeholder="" required>
                                 </div>
 
                                 <div class="col-2">
                                     <label for="nivel" class="form-label">Nivel de participación *</label>
-                                    <input type="number" class="form-control ValidCahnge" id="nivel" name="nivel" placeholder="" required>
+                                    <input type="number" class="form-control ValidChange" id="nivel" name="nivel" placeholder="" required>
                                 </div>
                             </div>
 
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-9"></div>
-                            <div class="col-md-3">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-2">
+                                <button class="w-100 btn btn-primary btn-lg" id="actualizaCtn" type="submit" style="display: none;">Actualizar</button>
+                            </div>
+                            <div class="col-md-2">
                                 <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()" style="display: none;">Cancelar</button>
                             </div>
                         </div>
                         <!-- seccion tabla que contiene listado de las formaciones academicas del maestro-->
@@ -67,7 +71,7 @@
                 
                 $(document).ready(function() {
                 if(profesionalObj.profesionalKey > 0){
-                    if(profesionalObj.experienciaDiseno.length == 0){
+                    if(profesionalObj.participacion.length == 0){
                         consultaParticipacionById();   
                     }else{
                         initData();
@@ -83,7 +87,7 @@
                     })
                     .done(function( result ) {
                         if(result.status == "success"){
-                            profesionalObj.experienciaDiseno = result.data;
+                            profesionalObj.participacion = result.data;
                             initData();
                         }
                     })
@@ -99,12 +103,12 @@
                 function initData(){
                     $("#ctnBody").empty();
                     var num = 1;
-                    $.each(profesionalObj.experienciaDiseno , function(key, experiencia){
+                    $.each(profesionalObj.participacion , function(key, participacion){
                         var tr = "<tr>"+
                                     "<th>"+(num++)+"</th>"+
-                                    "<td>"+experiencia.organismo+"</td>"+
-                                    "<td>"+experiencia.periodo+"</td>"+
-                                    "<td>"+niveles[experiencia.nivel]+"</td>"+
+                                    "<td>"+participacion.organismo+"</td>"+
+                                    "<td>"+participacion.periodo+"</td>"+
+                                    "<td>"+participacion.nivel+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -123,7 +127,7 @@
                     })
                     .done(function( result ) {
                         if(result.status == "success"){
-                            profesionalObj.experienciaDiseno = result.data;
+                            profesionalObj.participacion = result.data;
                             initData();
                         }
                     })
@@ -143,7 +147,7 @@
                     })
                     .done(function( result ) {
                         if(result.status == "success"){                        
-                            profesionalObj.experienciaDiseno = result.data;
+                            profesionalObj.participacion = result.data;
                             initData();
                         }
                     })
@@ -170,7 +174,7 @@
 
 
             function eliminaRow(idKey){
-                var listDatos = profesionalObj.experienciaDiseno;
+                var listDatos = profesionalObj.participacion;
                 var item = listDatos[idKey];
                 
                 $("#keyProfesor").val(profesionalObj.profesionalKey);
