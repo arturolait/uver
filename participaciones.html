@@ -10,6 +10,8 @@
                                 <div class="col-9">
                                     <label for="organismo" class="form-label">organismo</label>
                                     <input type="text" class="form-control ValidChange" id="organismo" name="organismo" placeholder="">
+                                    <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
+                                    <input class="form-control" id="identificador" name="identificador" type="hidden">
                                 </div>
 
                             </div>
@@ -68,7 +70,7 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
-                
+
                 if(profesionalObj.profesionalKey > 0){
                     if(profesionalObj.participacion.length == 0){
                         consultaParticipacionById();   
