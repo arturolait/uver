@@ -168,6 +168,7 @@
                 .done(function( result ) {
                     if(result.status == "success"){
                         $("#ctnBody").empty();
+                        var num = 1;
                         $.each(result.data , function(key, logro){
                             var tr = "<tr>"+
                                     "<th>"+(num++)+"</th>"+

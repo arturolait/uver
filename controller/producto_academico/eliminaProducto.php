@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../model/LogroProfesional.php';
+require_once '../../model/ProductoAcademico.php';
 require_once '../../core/constants.php';
 
 $arrayResponse = array("msj" => "La sesion ah caducado.", "status" => "error", "data" => null);
@@ -10,7 +10,7 @@ if(isset($_SESSION["profesor"])){
 
     $logro_key = $_POST["logro_key"];
 
-    $logro = new LogroProfesional();
+    $logro = new ProductoAcademico();
     $logro->setProductoKey($logro_key);
     $logro->setProfesionalKey($profesorKey);
 

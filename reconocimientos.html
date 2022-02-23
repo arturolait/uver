@@ -35,8 +35,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <td scope="col">Descripcion</td>
-                                                <th scope="col"></th>
+                                                <td scope="col">Descripción</td>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -170,6 +169,7 @@
                 .done(function( result ) {
                     if(result.status == "success"){
                         $("#ctnBody").empty();
+                        var num = 1;
                         $.each(result.data , function(key, logro){
                             var tr = "<tr>"+
                                     "<th>"+(num++)+"</th>"+

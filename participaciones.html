@@ -8,7 +8,7 @@
                             <div class="row mt-2">
 
                                 <div class="col-9">
-                                    <label for="organismo" class="form-label">organismo</label>
+                                    <label for="organismo" class="form-label">Organismo *</label>
                                     <input type="text" class="form-control ValidChange" id="organismo" name="organismo" placeholder="">
                                     <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
                                     <input class="form-control" id="identificador" name="identificador" type="hidden">
@@ -19,12 +19,12 @@
                             <div class="row mt-2">
 
                                 <div class="col-2">
-                                    <label for="periodo" class="form-label">Periodo (Años)</label>
+                                    <label for="periodo" class="form-label">Periodo (Años) *</label>
                                     <input type="number" class="form-control ValidChange" id="periodo" name="periodo" placeholder="" required>
                                 </div>
 
                                 <div class="col-2">
-                                    <label for="nivel" class="form-label">Nivel de participación *</label>
+                                    <label for="nivel" class="form-label">Nivel participación *</label>
                                     <input type="number" class="form-control ValidChange" id="nivel" name="nivel" placeholder="" required>
                                 </div>
                             </div>
@@ -48,15 +48,13 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Organizmo</th>
+                                                <th scope="col">Organismo</th>
                                                 <th scope="col">Periodo</th>
                                                 <th scope="col">Nivel de part.</th>
-                                                <th scope="col"></th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="ctnBody">
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -189,12 +187,12 @@
                     if(result.status == "success"){
                         $("#ctnBody").empty();
                         var num = 1;
-                        $.each(result.data , function(key, experiencia){
+                        $.each(result.data , function(key, participacion){
                             var tr = "<tr>"+
                                         "<th>"+(num++)+"</th>"+
-                                        "<td>"+experiencia.organismo+"</td>"+
-                                        "<td>"+experiencia.periodo+"</td>"+
-                                        "<td>"+niveles[experiencia.nivel]+"</td>"+
+                                        "<td>"+participacion.organismo+"</td>"+
+                                        "<td>"+participacion.periodo+"</td>"+
+                                        "<td>"+participacion.nivel+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                             "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
