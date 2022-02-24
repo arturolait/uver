@@ -121,7 +121,12 @@ if(isset($_SESSION["profesor"])){
                     })
                     .done(function( result ) {
                         if(result.status == "success"){
-                            window.location.href = "home.php";
+                            if (result.data['estatus']==1) {
+                                window.location.href = "admin.php";
+                            } else {
+                                window.location.href = "home.php";
+                            }
+                            
                         }else{ // si el No de trabajador ya se encuentra registrado
                             alert(result.msj)
                             console.log(result);

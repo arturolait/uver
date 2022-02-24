@@ -6,6 +6,7 @@ class Profesor{
     private $conexion;
     public $id_profesor;
     public $password;
+    public $status;
     private $_condiciones;
     private $responseResult;
 
@@ -32,7 +33,7 @@ class Profesor{
 
     public function consultaCredenciales(){
         $where = $this->getCondicion();
-        $SQL = "SELECT profesor_key, identificador, contrasena 
+        $SQL = "SELECT profesor_key, identificador, contrasena, estatus
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();

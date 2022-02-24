@@ -26,6 +26,7 @@ if(isset($_POST["idProfesor"]) && isset($_POST["password"])){
         $arrayResponse["msj"] = "Login exitoso.";
         $arrayResponse["status"] = "success";
         $arrayResponse["data"] = $aProfesor;
+        
     }
 
 }
