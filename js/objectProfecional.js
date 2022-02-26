@@ -20,6 +20,7 @@ profesionalObj.gestionAcademica = [];
 profesionalObj.experienciaProfesional = [];
 profesionalObj.experienciaDiseno = [];
 profesionalObj.participacion = [];
+profesionalObj.listaProfesores = [];
 profesionalObj.actualizacionDis = [];
 profesionalObj.productoAcademico = [];
 profesionalObj.logrosProfesionales = [];

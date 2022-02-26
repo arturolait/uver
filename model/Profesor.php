@@ -42,6 +42,17 @@ class Profesor{
         return $arrayProfesor;
     }
 
+    public function consultarProfesores() {
+        $where = $this->getCondicion();
+        $SQL = "SELECT profesor_key, identificador, estatus, CONCAT(nombre,' ',apPaterno,' ',apMaterno) AS nombre 
+            FROM ".DB_NAME.".".$this->_tablaName." prof JOIN persona per ON prof.identificador = per.noProfesor ";
+        $result = $this->conexion->dbc->prepare($SQL);
+        $result->execute();
+        $arrayProfesor = $result->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $arrayProfesor;
+    }
+
     /**
      * genera un arreglo con las condiciones que tendra
      * la sentencia where

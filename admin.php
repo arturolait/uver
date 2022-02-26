@@ -72,7 +72,7 @@ if(!isset($_SESSION["profesor"])){
         <script type="text/javascript">
             $(function(){
                 $("#lista-Profesor").load("profesores_admin.html"); 
-                $("#nav-home").load("informacion_personal.html");                
+                /* $("#nav-home").load("informacion_personal.html");    */             
             });
 
             function setHtmlContent(page){
