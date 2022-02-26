@@ -5,9 +5,36 @@
                     <h4 class="mb-3">Administrando Profesores</h4>
                     <form id="frmDataInfo" class="needs-validation" novalidate>
                         <div class="row g-3">
+                            
+                            <div class="row mt-2">
+                                <div class="col-sm-3">
+                                    <label for="RapPaterno" class="form-label">Apellido Paterno *</label>
+                                    <input type="text" class="form-control ValidCahnge" id="RapPaterno" name="RapPaterno" placeholder="" value="" required>
+                                    <div class="invalid-feedback">
+                                        El campo apellido paterno es requerido.
+                                    </div>
+                                </div>
+    
+                                <div class="col-sm-3">
+                                    <label for="RapMaterno" class="form-label">Apellido Materno</label>
+                                    <input type="text" class="form-control" id="RapMaterno" name="RapMaterno" placeholder="" value="" required>
+                                    <div class="invalid-feedback">
+                                        El campo apellido materno es requerido.
+                                    </div>
+                                </div>
+    
+                                <div class="col-sm-6">
+                                    <label for="Rnombre" class="form-label">Nombre(s) *</label>
+                                    <input type="text" class="form-control ValidCahnge" id="Rnombre" name="Rnombre" placeholder="" value="" required>
+                                    <div class="invalid-feedback">
+                                        El campo nombre es requerido
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row mt-2">
                                 <div class="col-2">
-                                    <label for="identificador" class="form-label">Identificador</label>
+                                    <label for="identificador" class="form-label">Identificador5</label>
                                     <input type="text" class="form-control ValidChange" id="identificador" name="identificador" placeholder="">
                                     <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
                                     <input class="form-control" id="identificador" name="identificador" type="hidden">
@@ -24,11 +51,11 @@
                                         <option value="2">Profesor</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2 align-items-center">
-                                    <button class="w-100 btn btn-success btn-lg" id="agregarCtn" type="submit" disabled>Agregar</button>
+                                <div class="col-md-2 posrel">
+                                    <button class="w-100 btn btn-success btn-lg btn-bot" id="agregarCtn" type="submit" disabled>Agregar</button>
                                 </div>
-                                <div class="col-md-2">
-                                    <button class="w-100 btn btn-danger btn-lg" id="CancelarCtn" type="button" onclick="resetFormulario()">Cancelar</button>
+                                <div class="col-md-2 posrel ml-10">
+                                    <button class="w-100 btn btn-danger btn-lg btn-bot" id="CancelarCtn" type="button" onclick="resetFormulario()">Cancelar</button>
                                 </div>
                             </div>
 
@@ -42,9 +69,9 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Organismo</th>
-                                                <th scope="col">Periodo</th>
-                                                <th scope="col">Nivel de exp.</th>
+                                                <th scope="col">Identificador</th>
+                                                <th scope="col">Nombre Completo</th>
+                                                <th scope="col">Estatus</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -62,8 +89,15 @@
         </div>
 
         <script type="text/javascript">
-            var niveles = {'1':'Basico','2':'Intermedio','3':'Avanzado','4':'Master'};
+            var niveles = {'1':'Admin','2':'Profesor'};
             $(document).ready(function() {
+                if(profesionalObj.noProfesor > 0){
+                    initData();
+                   
+                }else{
+                    consultarProfesor();
+                }
+
                 if(profesionalObj.profesionalKey > 0){
                     if(profesionalObj.experienciaDiseno.length == 0){
                         consultaExperienciaById();   
@@ -203,6 +237,40 @@
 
                 return false;
                 
+            }
+
+            function consultarProfesor(){
+                $.ajax({
+                    method: "POST",
+                    url: "controller/info_personal/consultaPersonal.php",
+                    data: $("#frmDataInfoCslt").serialize()
+                })
+                .done(function( result ) {
+                    if(result.status == "success"){
+                        var profesional = result.data;
+                        //damos valor a nuestro objeto
+                        profesionalObj.profesionalKey = parseInt(profesional.persona_key);
+                        profesionalObj.apPaterno = profesional.apPaterno;
+                        profesionalObj.apMaterno = profesional.apMaterno;
+                        profesionalObj.nombre = profesional.nombre;
+                        profesionalObj.noProfesor = parseInt(profesional.noProfesor);
+                        profesionalObj.fechaNacimiento = profesional.fechaNacimiento;
+                        profesionalObj.nombramiento = profesional.nombramiento;
+                        profesionalObj.antiguedad = parseInt(profesional.antiguedad);
+                        profesionalObj.fechaContratacion = profesional.fechaContratacion;
+                        
+                        if(profesionalObj.noProfesor > 0){
+                            dataInit();
+                            $(".disabledBtn").prop('disabled', false);
+                            $("#actualizarCtn").show();
+                        }
+                    }else{
+                        alert(result.msj);
+                    }
+                })
+                .fail(function(jqXHR, textStatus){
+                    alert( "Peticion fallida failed: " + textStatus );
+                });
             }
 
             function actualizaRow(idKey){

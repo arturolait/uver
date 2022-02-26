@@ -1,3 +1,13 @@
 .accionTable{
     cursor: pointer;
 }
+.btn-bot {
+    position: absolute;
+    bottom: 0;
+}
+.posrel {
+    position: relative;
+}
+.ml-10 {
+    margin-left: 10px;
+}
