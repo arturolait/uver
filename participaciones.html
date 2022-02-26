@@ -17,6 +17,20 @@
                             </div>
 
                             <div class="row mt-2">
+                                <div class="col-2">
+                                    <label for="pais" class="form-label">Fecha de inicio</label>
+                                    <input type="text" id="fechaInicio" name="fechaInicio" class="form-control ValidChange" value="">
+                                    <script type="text/javascript">
+                                        $(function() {
+                                            $('input[name="fechaInicio"]').daterangepicker({
+                                                singleDatePicker: true,
+                                                showDropdowns: true,
+                                                minYear: parseInt((moment().format('YYYY')-50),10),
+                                                maxYear: parseInt(moment().format('YYYY'),10)
+                                            });
+                                        });
+                                    </script>
+                                </div>
 
                                 <div class="col-2">
                                     <label for="periodo" class="form-label">Periodo (Años) *</label>
@@ -25,7 +39,19 @@
 
                                 <div class="col-2">
                                     <label for="nivel" class="form-label">Nivel participación *</label>
-                                    <input type="number" class="form-control ValidChange" id="nivel" name="nivel" placeholder="" required>
+                                    <select id="nivel" name="nivel" class="form-control ValidChange" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="1">Miembro</option>
+                                        <option value="2">Socio</option>
+                                        <option value="3">Directivo</option>
+                                        <option value="4">Integrante</option>
+                                        <option value="5">Coordinador</option>
+                                        <option value="6">Otro</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <label for="otroNivel" class="form-label">Especifique Nivel</label>
+                                    <input type="text" class="form-control ValidChange" id="otroNivel" name="otroNivel" placeholder="" required>
                                 </div>
                             </div>
 
