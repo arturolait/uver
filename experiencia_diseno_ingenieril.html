@@ -41,9 +41,9 @@
                                         <option value="5">Otro</option>
                                     </select>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-2" id="especicargo" style="display: none;">
                                     <label for="otroCargo" class="form-label">Especifique cargo</label>
-                                    <input type="text" class="form-control ValidChange" id="otroCargo" name="otroCargo" placeholder="" required>
+                                    <input type="text" class="form-control" id="otroCargo" name="otroCargo" placeholder="" required>
                                 </div>
                             </div>
 
@@ -69,6 +69,7 @@
                                                 <th scope="col">Organismo</th>
                                                 <th scope="col">Periodo</th>
                                                 <th scope="col">Nivel de exp.</th>
+                                                <th scope="col">Cargo</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -87,6 +88,7 @@
 
         <script type="text/javascript">
             var niveles = {'1':'Basico','2':'Intermedio','3':'Avanzado','4':'Master'};
+            var cargos = {'1':'Responsable','2':'Asistente','3':'Analista','4':'Auxiliar'};
             $(document).ready(function() {
                 if(profesionalObj.profesionalKey > 0){
                     if(profesionalObj.experienciaDiseno.length == 0){
@@ -107,6 +109,8 @@
                         if(result.status == "success"){
                             profesionalObj.experienciaDiseno = result.data;
                             initData();
+                        } else {
+                            alert( "Peticion fallida: " + result.msj );
                         }
                     })
                     .fail(function(jqXHR, textStatus){
@@ -127,6 +131,7 @@
                                     "<td>"+experiencia.organismo+"</td>"+
                                     "<td>"+experiencia.periodo+"</td>"+
                                     "<td>"+niveles[experiencia.nivel]+"</td>"+
+                                    "<td>"+((experiencia.cargo==5)? experiencia.especificargo:cargos[experiencia.cargo])+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -187,6 +192,15 @@
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
+
+                $("#cargo").change(function(){
+                    if ($(this).val() == 5) {
+                        $('#especicargo').show();
+                    } else {
+                        $('#otroCargo').val('');
+                        $('#especicargo').hide();
+                    }
+                });
             });
 
 
@@ -212,6 +226,7 @@
                                         "<td>"+experiencia.organismo+"</td>"+
                                         "<td>"+experiencia.periodo+"</td>"+
                                         "<td>"+niveles[experiencia.nivel]+"</td>"+
+                                        "<td>"+((experiencia.cargo==5)? experiencia.especificargo:cargos[experiencia.cargo])+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                             "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -237,6 +252,13 @@
                 $("#organismo").val(item.organismo);
                 $("#periodo").val(item.periodo);
                 $("#nivel").val(item.nivel);
+                $("#cargo").val(item.cargo);
+                if (item.cargo == 5) {
+                    $('#especicargo').show();
+                    $("#otroCargo").val(item.especificargo);
+                } else {
+                    $('#especicargo').hide();
+                }
 
                 $("#agregarCtn").css("display", "none");
                 $("#actualizaCtn").css("display", "block");

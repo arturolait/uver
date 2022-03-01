@@ -8,6 +8,8 @@ class ExperienciaDiseno{
     private $organismo;
     private $periodo;
     private $nivel;
+    private $cargo;
+    private $otroCargo;
     private $profesionalKey;
     private $_condiciones;
     private $responseResult;
@@ -59,16 +61,38 @@ class ExperienciaDiseno{
         return $this->nivel;
     }
 
+    public function setCargo($cargo){
+        $this->cargo = $cargo;
+    }
+
+    public function getCargo(){
+        return $this->cargo;
+    }
+
+    public function setOtroCargo($otroCargo){
+        $this->otroCargo = $otroCargo;
+    }
+
+    public function getOtroCargo(){
+        return $this->otroCargo;
+    }
+
     public function registraExperiencia(){
         $this->conexion->beginTransactionPDO();
         try{
-            $SQL = "INSERT INTO ".DB_NAME.".".$this->_tablaName." (organismo, periodo, nivel, persona_fkey)
-                VALUES(:organismo, :periodo, :nivel, :persona_fkey);";
+            $SQL = "INSERT INTO ".DB_NAME.".".$this->_tablaName." (organismo, periodo, nivel, cargo, especificargo, persona_fkey)
+                VALUES(:organismo, :periodo, :nivel, :cargo, :especificargo, :persona_fkey);";
 
             $result = $this->conexion->dbc->prepare($SQL);
             $result->bindParam(':organismo', $this->organismo);
             $result->bindParam(':periodo', $this->periodo);
             $result->bindParam(':nivel', $this->nivel);
+            $result->bindParam(':cargo', $this->cargo);
+            if ($this->cargo == 5) {
+                $result->bindParam(':especificargo', $this->otroCargo);
+            } else {
+                $result->bindParam(':especificargo','');
+            }
             $result->bindParam(':persona_fkey', $this->profesionalKey);
             $result->execute();
 
@@ -88,11 +112,17 @@ class ExperienciaDiseno{
         $this->conexion->beginTransactionPDO();
         try{
             $where = $this->getCondicion();
-            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, periodo = :periodo, nivel = :nivel ".$where;
+            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, periodo = :periodo, nivel = :nivel, cargo = :cargo, especificargo = :especificargo ".$where;
             $result = $this->conexion->dbc->prepare($SQL);
             $result->bindParam(':organismo', $this->organismo);
             $result->bindParam(':periodo', $this->periodo);
             $result->bindParam(':nivel', $this->nivel);
+            $result->bindParam(':cargo', $this->cargo);
+            if ($this->cargo == 5) {
+                $result->bindParam(':especificargo', $this->otroCargo);
+            } else {
+                $result->bindParam(':especificargo','');
+            }
             $result->execute();
 
             $this->conexion->commitPDO();
@@ -117,7 +147,7 @@ class ExperienciaDiseno{
 
     public function consultaByIdProfesor(){
         $where = $this->getCondicion();
-        $SQL = "SELECT expediseno_key, organismo, periodo, nivel, persona_fkey 
+        $SQL = "SELECT expediseno_key, organismo, periodo, nivel, cargo, especificargo, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
@@ -133,7 +163,7 @@ class ExperienciaDiseno{
 
     public function consultaByIdFormacion(){
         $where = $this->getCondicion();
-        $SQL = "SELECT expediseno_key, organismo, periodo, nivel, persona_fkey 
+        $SQL = "SELECT expediseno_key, organismo, periodo, nivel, cargo, especificargo, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
