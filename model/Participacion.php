@@ -8,6 +8,8 @@ class Participacion {
     private $organismo;
     private $periodo;
     private $nivel;
+    private $fechaInicio;
+    private $especifinivel;
     private $profesionalKey;
     private $_condiciones;
     private $responseResult;
@@ -59,16 +61,40 @@ class Participacion {
         return $this->nivel;
     }
 
+    public function setFechaInicio($fechaInicio){
+        $this->fechaInicio = date('Y-m-d',strtotime($fechaInicio));
+    }
+
+    public function getFechaInicio(){
+        return $this->fechaInicio;
+    }
+
+    public function setEspecifinivel($especifinivel){
+        $this->especifinivel = $especifinivel;
+    }
+
+    public function getEspecifinivel(){
+        return $this->especifinivel;
+    }
+
     public function registraParticipacion(){
         $this->conexion->beginTransactionPDO();
         try{
-            $SQL = "INSERT INTO ".DB_NAME.".".$this->_tablaName." (organismo, periodo, nivel, persona_fkey)
-                VALUES(:organismo, :periodo, :nivel, :persona_fkey);";
+            $SQL = "INSERT INTO ".DB_NAME.".".$this->_tablaName." (organismo, fecha_inicio, periodo, nivel, especifinivel, persona_fkey)
+                VALUES(:organismo, :fecha_inicio, :periodo, :nivel, :especifinivel, :persona_fkey);";
 
             $result = $this->conexion->dbc->prepare($SQL);
             $result->bindParam(':organismo', $this->organismo);
             $result->bindParam(':periodo', $this->periodo);
             $result->bindParam(':nivel', $this->nivel);
+            $result->bindParam(':fecha_inicio', $this->fechaInicio);
+
+            if ( $this->nivel ==6) {
+                $result->bindParam(':especifinivel', $this->especifinivel);
+            } else {
+                $result->bindParam(':especifinivel', '');
+            }
+
             $result->bindParam(':persona_fkey', $this->profesionalKey);
             $result->execute();
 
@@ -88,11 +114,17 @@ class Participacion {
         $this->conexion->beginTransactionPDO();
         try{
             $where = $this->getCondicion();
-            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, periodo = :periodo, nivel = :nivel ".$where;
+            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, fecha_inicio = :fecha_inicio, periodo = :periodo, nivel = :nivel, especifinivel = :especifinivel, ".$where;
             $result = $this->conexion->dbc->prepare($SQL);
             $result->bindParam(':organismo', $this->organismo);
             $result->bindParam(':periodo', $this->periodo);
             $result->bindParam(':nivel', $this->nivel);
+            $result->bindParam(':fecha_inicio', $this->fechaInicio);
+            if ($this->nivel ==6) {
+                $result->bindParam(':especifinivel', $this->especifinivel);
+            } else {
+                $result->bindParam(':especifinivel', '');
+            }
             $result->execute();
 
             $this->conexion->commitPDO();
@@ -117,7 +149,7 @@ class Participacion {
 
     public function consultaByIdProfesor(){
         $where = $this->getCondicion();
-        $SQL = "SELECT participacion_key, organismo, periodo, nivel, persona_fkey 
+        $SQL = "SELECT participacion_key, organismo, periodo, fecha_inicio, nivel, especifinivel, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
@@ -133,7 +165,7 @@ class Participacion {
 
     public function consultaByIdFormacion(){
         $where = $this->getCondicion();
-        $SQL = "SELECT participacion_key, organismo, periodo, nivel, persona_fkey 
+        $SQL = "SELECT participacion_key, organismo, periodo, fecha_inicio, nivel, especifinivel, persona_fkey 
             FROM ".DB_NAME.".".$this->_tablaName.$where;
         $result = $this->conexion->dbc->prepare($SQL);
         $result->execute();
