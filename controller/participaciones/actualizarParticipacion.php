@@ -4,36 +4,52 @@ require_once '../../model/Participacion.php';
 require_once '../../core/constants.php';
 
 
-if(isset($_POST["organismo"]) && isset($_POST["periodo"]) && isset($_POST["nivel"]) && isset($_POST["identificador"]) && isset($_POST["keyProfesor"])) {
+if(isset($_POST["organismo"]) && isset($_POST["periodo"]) && isset($_POST["nivel"]) && isset($_POST["fechaInicio"]) && isset($_POST["identificador"]) && isset($_POST["keyProfesor"])) {
     
     $organismo = $_POST["organismo"];
     $periodo = $_POST["periodo"];
     $nivel = $_POST["nivel"];
+    $fechaInicio = $_POST["fechaInicio"];
+    if ($nivel == 6) {
+        if (empty($_POST["otroNivel"])) {
+            $otro = $_POST["otroNivel"];
+        } else {
+            $arrayResponse["msj"] = "No se especifico la participacion.";
+            $arrayResponse["status"] = "error";
+            header('Content-type: application/json');
+            echo json_encode($arrayResponse);
+        }
+    }
+
     $identificador = $_POST["identificador"];
     $keyProfesor = $_POST["keyProfesor"];
 
     $arrayResponse = array("msj" => "", "status" => "error", "data" => null);
 
-    $experiencia = new Participacion();
-    $experiencia->setParticipacionKey($identificador);
+    $participacion = new Participacion();
+    $participacion->setParticipacionKey($identificador);
 
-    $experiencia->setOrganismo($organismo);
-    $experiencia->setPeriodo($periodo);
-    $experiencia->setNivel($nivel);
-    $experiencia->setProfesionalKey($keyProfesor);
+    $participacion->setOrganismo($organismo);
+    $participacion->setPeriodo($periodo);
+    $participacion->setNivel($nivel);
+    $participacion->setFechaInicio($fechaInicio);
+    if ($nivel == 6) {
+        $participacion->setEspecifinivel($otro);
+    }
+    $participacion->setProfesionalKey($keyProfesor);
 
     // Agregamos condicion sobre el id del profesor
-    $experiencia->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
-    $experiencia->setCondicion("participacion_key", $experiencia->getParticipacionKey(), IGUAL, NUMERO);
-    $experiencia->actualizaParticipacion();
+    $participacion->setCondicion("persona_fkey", $participacion->getProfesionalKey(), IGUAL, NUMERO);
+    $participacion->setCondicion("participacion_key", $participacion->getParticipacionKey(), IGUAL, NUMERO);
+    $participacion->actualizaParticipacion();
     
-    $experiencia->clearCondicion();
-    $experiencia->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
-    $aexperiencia = $experiencia->consultaByIdProfesor();
+    $participacion->clearCondicion();
+    $participacion->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
+    $aparticipacion = $participacion->consultaByIdProfesor();
 
     $arrayResponse["msj"] = "Se actualizaron correctamente los datos.";
     $arrayResponse["status"] = "success";
-    $arrayResponse["data"] = $aexperiencia;
+    $arrayResponse["data"] = $aparticipacion;
 
 
     header('Content-type: application/json');
