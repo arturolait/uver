@@ -73,6 +73,8 @@ CREATE TABLE `experienciadiseno` (
   `organismo` varchar(150) NOT NULL,
   `periodo` int(11) NOT NULL,
   `nivel` tinyint(1) NOT NULL,
+  `cargo` tinyint(1) NOT NULL,
+  `especificargo` varchar(120) DEFAULT NULL,
   `persona_fkey` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -80,9 +82,10 @@ CREATE TABLE `experienciadiseno` (
 -- Volcado de datos para la tabla `experienciadiseno`
 --
 
-INSERT INTO `experienciadiseno` (`expediseno_key`, `organismo`, `periodo`, `nivel`, `persona_fkey`) VALUES
-(1, 'ministerio de educacion', 2, 3, 1),
-(3, 'secretaria de derechos humanos', 1, 4, 1);
+INSERT INTO `experienciadiseno` (`expediseno_key`, `organismo`, `periodo`, `nivel`, `cargo`, `especificargo`, `persona_fkey`) VALUES
+(1, 'ministerio de educacion', 2, 3, 2, '', 1),
+(3, 'secretaria de derechos humanos', 1, 3, 5, 'promotor extra', 1),
+(4, 'union europea', 3, 2, 5, 'jefe zuko', 1);
 
 -- --------------------------------------------------------
 
@@ -152,7 +155,8 @@ CREATE TABLE `gestionacademica` (
 
 INSERT INTO `gestionacademica` (`gestion_key`, `puesto`, `instituto`, `fecha_inicio`, `fecha_fin`, `actual`, `persona_fkey`) VALUES
 (2, 'prefectura', 'universidad zacateca', '2019-02-01', '2021-06-01', 1, 1),
-(4, 'prueba de gestion', 'TEC ANAUAC', '2022-02-25', '2022-01-03', 1, 1);
+(4, 'prueba de gestion', 'TEC ANAUAC', '2022-02-25', '2022-01-03', 2, 1),
+(5, 'profesor', 'colegio de la uname', '2020-01-01', '1970-01-01', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -182,8 +186,10 @@ INSERT INTO `logrosprofesionales` (`logro_key`, `descripcion`, `persona_fkey`) V
 CREATE TABLE `participacioneventos` (
   `participacion_key` int(11) NOT NULL,
   `organismo` varchar(150) NOT NULL,
+  `fecha_inicio` date DEFAULT NULL,
   `periodo` tinyint(4) NOT NULL COMMENT 'periodo en anios',
   `nivel` tinyint(1) NOT NULL,
+  `especifinivel` varchar(150) DEFAULT NULL,
   `persona_fkey` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -191,8 +197,8 @@ CREATE TABLE `participacioneventos` (
 -- Volcado de datos para la tabla `participacioneventos`
 --
 
-INSERT INTO `participacioneventos` (`participacion_key`, `organismo`, `periodo`, `nivel`, `persona_fkey`) VALUES
-(1, 'ministerio de educacion', 2, 1, 1);
+INSERT INTO `participacioneventos` (`participacion_key`, `organismo`, `fecha_inicio`, `periodo`, `nivel`, `especifinivel`, `persona_fkey`) VALUES
+(1, 'ministerio de educacion', '2022-01-05', 2, 6, 'especificando', 1);
 
 -- --------------------------------------------------------
 
@@ -257,7 +263,7 @@ CREATE TABLE `profesor` (
 --
 
 INSERT INTO `profesor` (`profesor_key`, `identificador`, `contrasena`, `estatus`) VALUES
-(1, 123456, 'uv2022', 1),
+(1, 123456, 'uv2022', 2),
 (2, 654321, 'uv2022', 2);
 
 -- --------------------------------------------------------
@@ -383,7 +389,7 @@ ALTER TABLE `capacitaciondocente`
 -- AUTO_INCREMENT de la tabla `experienciadiseno`
 --
 ALTER TABLE `experienciadiseno`
-  MODIFY `expediseno_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `expediseno_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `experienciaprofecional`
@@ -401,7 +407,7 @@ ALTER TABLE `formacionademica`
 -- AUTO_INCREMENT de la tabla `gestionacademica`
 --
 ALTER TABLE `gestionacademica`
-  MODIFY `gestion_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `gestion_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `logrosprofesionales`
@@ -413,7 +419,7 @@ ALTER TABLE `logrosprofesionales`
 -- AUTO_INCREMENT de la tabla `participacioneventos`
 --
 ALTER TABLE `participacioneventos`
-  MODIFY `participacion_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `participacion_key` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
