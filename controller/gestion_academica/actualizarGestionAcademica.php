@@ -9,8 +9,20 @@ if(isset($_POST["puesto"]) && isset($_POST["institucion"]) && isset($_POST["fech
     
     $puesto = $_POST["puesto"];
     $institucion = $_POST["institucion"];
-    $fechfin = $_POST["fechaFinal"];
     $fechini = $_POST["fechaInicio"];
+    if(empty($_POST["actual"])){
+        if (isset($_POST["fechaFinal"])) {
+            $fechfin = $_POST["fechaFinal"];
+            $actual = 2;
+        } else {
+            $arrayResponse["msj"] = "No se recibio informacion de Fecha final.";
+            $arrayResponse["status"] = "error";
+            header('Content-type: application/json');
+            echo json_encode($arrayResponse);
+        }
+    } else {
+        $actual = 1;
+    }
     $actual = (empty($_POST["actual"]))? 2:1;
     $identificador = $_POST["identificador"];
     $keyProfesor = $_POST["keyProfesor"];
@@ -23,7 +35,9 @@ if(isset($_POST["puesto"]) && isset($_POST["institucion"]) && isset($_POST["fech
     $gestion->setPuesto($puesto);
     $gestion->setInstituto($institucion);
     $gestion->setFechaInicio($fechini);
-    $gestion->setFechaFin($fechfin);
+    if (isset($fechfin)) {
+        $gestion->setFechaFin($fechfin);
+    }
     $gestion->setActual($actual);
     $gestion->setProfesionalKey($keyProfesor);
 
