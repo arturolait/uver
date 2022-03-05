@@ -49,7 +49,7 @@
                                         <option value="6">Otro</option>
                                     </select>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-2" id="espeficNivel">
                                     <label for="otroNivel" class="form-label">Especifique Nivel</label>
                                     <input type="text" class="form-control ValidChange" id="otroNivel" name="otroNivel" placeholder="" required>
                                 </div>
@@ -76,6 +76,7 @@
                                                 <th scope="col">#</th>
                                                 <th scope="col">Organismo</th>
                                                 <th scope="col">Periodo</th>
+                                                <th scope="col">Fecha Inicio</th>
                                                 <th scope="col">Nivel de part.</th>
                                                 <th scope="col"></th>
                                             </tr>
@@ -93,8 +94,9 @@
         </div>
 
         <script type="text/javascript">
+            var niveles = {'1':'Miembro','2':'Socio','3':'Directivo','4':'Integrante','5':'Coordinador'};
             $(document).ready(function() {
-
+                
                 if(profesionalObj.profesionalKey > 0){
                     if(profesionalObj.participacion.length == 0){
                         consultaParticipacionById();   
@@ -133,7 +135,8 @@
                                     "<th>"+(num++)+"</th>"+
                                     "<td>"+participacion.organismo+"</td>"+
                                     "<td>"+participacion.periodo+"</td>"+
-                                    "<td>"+participacion.nivel+"</td>"+
+                                    "<td>"+participacion.fecha_inicio+"</td>"+
+                                    "<td>"+((participacion.nivel==6)? participacion.especifinivel:niveles[participacion.nivel])+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -194,6 +197,14 @@
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
+                $("#otroNivel").change(function(){
+                    if ($(this).val() == 6) {
+                        $('#espeficNivel').show();
+                    } else {
+                        $('#otroNivel').val('');
+                        $('#espeficNivel').hide();
+                    }
+                });
             });
 
 
@@ -218,7 +229,8 @@
                                         "<th>"+(num++)+"</th>"+
                                         "<td>"+participacion.organismo+"</td>"+
                                         "<td>"+participacion.periodo+"</td>"+
-                                        "<td>"+participacion.nivel+"</td>"+
+                                        "<td>"+participacion.fecha_inicio+"</td>"+
+                                        "<td>"+((participacion.nivel==6)? participacion.especifinivel:niveles[participacion.nivel])+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                             "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -242,8 +254,15 @@
 
                 $("#identificador").val(item.participacion_key);
                 $("#organismo").val(item.organismo);
+                $("#fechaInicio").val(item.fecha_inicio);
                 $("#periodo").val(item.periodo);
                 $("#nivel").val(item.nivel);
+                if (item.nivel==6) {
+                    $("#espeficNivel").show();
+                    $("#otroNivel").val(item.especifinivel);
+                } else {
+                    $("#espeficNivel").hide();
+                }
 
                 $("#agregarCtn").css("display", "none");
                 $("#actualizaCtn").css("display", "block");
