@@ -8,7 +8,7 @@
                             <div class="row mt-2">
 
                                 <div class="col-9">
-                                    <label for="puesto" class="form-label">actividad o puesto</label>
+                                    <label for="puesto" class="form-label">Actividad o puesto</label>
                                     <input type="text" class="form-control ValidChange" id="puesto" name="puesto" placeholder="">
                                     <input class="form-control" id="keyProfesor" name="keyProfesor" type="hidden">
                                     <input class="form-control" id="identificador" name="identificador" type="hidden">
@@ -25,7 +25,7 @@
                                     </div>
                                 </div>
                                 <div class="col-2">
-                                    <label for="pais" class="form-label">fecha de inicio</label>
+                                    <label for="pais" class="form-label">Fecha de inicio</label>
                                     <input type="text" id="fechaInicio" name="fechaInicio" class="form-control ValidChange" value="">
                                     <script type="text/javascript">
                                         $(function() {
@@ -40,7 +40,7 @@
                                 </div>
 
                                 <div class="col-2">
-                                    <label for="pais" class="form-label">fecha de fin</label>
+                                    <label for="pais" class="form-label">Fecha de fin</label>
                                     <input type="text" id="fechaFinal" name="fechaFinal" class="form-control ValidChange" value="">
                                     <script type="text/javascript">
                                         $(function() {
@@ -55,7 +55,7 @@
                                 </div>
 
                                 <div class="col-2">
-                                    <input type="checkbox" class="form-control form-check-input" id="actual" name="actual" value="1">
+                                    <input type="checkbox" class="form-control form-check-input ValidChange" id="actual" name="actual" value="1">
                                     <label class="form-check-label" for="same-address">Actual</label>
                                 </div>
                             </div>
@@ -83,7 +83,6 @@
                                                 <th scope="col">Instituto</th>
                                                 <th scope="col">fecha inicio</th>
                                                 <th scope="col">Fecha fin</th>
-                                                <th scope="col"></th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -126,9 +125,7 @@
                     .fail(function(jqXHR, textStatus){
                         alert( "Peticion fallida failed: " + textStatus );
                     });
-
                     resetFormulario();
-                    
                     return false;
                 });
 
@@ -136,14 +133,12 @@
                     $("#ctnBody").empty();
                     var num = 1;
                     $.each(profesionalObj.gestionAcademica , function(key, gestion){
-                        var actual = gestion.actual == 1? "Actual":" - ";
                         var tr = "<tr>"+
                                     "<th>"+(num++)+"</th>"+
                                     "<td>"+gestion.puesto+"</td>"+
                                     "<td>"+gestion.instituto+"</td>"+
                                     "<td>"+gestion.fecha_inicio+"</td>"+
-                                    "<td>"+gestion.fecha_fin+"</td>"+
-                                    "<td>"+actual+"</td>"+
+                                    "<td>"+((gestion.actual == 1)? "Actual":gestion.fecha_fin)+"</td>"+
                                     "<td>"+
                                         "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                         "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -169,9 +164,7 @@
                     .fail(function(jqXHR, textStatus){
                         alert( "Peticion fallida failed: " + textStatus );
                     });
-
                     resetFormulario();
-
                     return false;
                 });
 
@@ -189,7 +182,6 @@
                     .fail(function(jqXHR, textStatus){
                         alert( "Peticion fallida failed: " + textStatus );
                     });
-
                     return false;
                 }
 
@@ -197,10 +189,11 @@
                     var ilegalElement = 0;
                     $(".ValidChange").each(function() {
                         if($(this).val() == ""){
-                            ilegalElement++;                            
+                            ilegalElement++;
+                            console.log('esta vacio');                        
                         }
                     });
-                    console.log('tenemos '+ilegalElement+' vacios');
+                    ilegalElement -= ($('#actual').is(':checked'))? 1:0;
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
@@ -222,14 +215,12 @@
                         $("#ctnBody").empty();
                         var num = 1;
                         $.each(result.data , function(key, gestion){
-                            var actual = gestion.actual == 1? "Actual":" - ";
                             var tr = "<tr>"+
                                         "<th>"+(num++)+"</th>"+
                                         "<td>"+gestion.puesto+"</td>"+
                                         "<td>"+gestion.instituto+"</td>"+
                                         "<td>"+gestion.fecha_inicio+"</td>"+
-                                        "<td>"+gestion.fecha_fin+"</td>"+
-                                        "<td>"+actual+"</td>"+
+                                        "<td>"+((gestion.actual == 1)? "Actual":gestion.fecha_fin)+"</td>"+
                                         "<td>"+
                                             "<button class='btn btn-primary btn-sm' type='button' onclick='actualizaRow("+key+")'>Actualizar</button>&nbsp;"+
                                             "<button class='btn btn-danger btn-sm' type='button' onclick='eliminaRow("+key+")'>Eliminar</button>"+
@@ -242,12 +233,12 @@
                 .fail(function(jqXHR, textStatus){
                     alert( "Peticion fallida failed: " + textStatus );
                 });
-
                 return false;
-                
             }
 
             function actualizaRow(idKey){
+                $("#frmDataInfo")[0].reset();
+                $('#actual').removeAttr('checked');
                 var listDatos = profesionalObj.gestionAcademica;
                 var item = listDatos[idKey];
 
@@ -256,15 +247,14 @@
                 $("#titulo").val(item.titulo);
                 $("#institucion").val(item.instituto);
                 $("#fechaInicio").val(item.fecha_inicio);
-                $("#fechaFinal").val(item.fecha_fin);
                 if (item.actual == 1 || item.actual == '1') {
                     $('#actual').attr('checked', true);
+                } else {
+                    $("#fechaFinal").val(item.fecha_fin);
                 }
-
                 $("#agregarCtn").css("display", "none");
                 $("#actualizaCtn").css("display", "block");
                 $("#CancelarCtn").css("display", "block");
-                
             }
 
             function resetFormulario(){
@@ -275,5 +265,4 @@
                 $("#actualizaCtn").css("display", "none");
                 $("#CancelarCtn").css("display", "none");
             }
-
         </script>

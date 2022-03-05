@@ -114,7 +114,7 @@ class Participacion {
         $this->conexion->beginTransactionPDO();
         try{
             $where = $this->getCondicion();
-            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, fecha_inicio = :fecha_inicio, periodo = :periodo, nivel = :nivel, especifinivel = :especifinivel, ".$where;
+            $SQL = "UPDATE ".DB_NAME.".".$this->_tablaName." SET organismo = :organismo, fecha_inicio = :fecha_inicio, periodo = :periodo, nivel = :nivel, especifinivel = :especifinivel ".$where;
             $result = $this->conexion->dbc->prepare($SQL);
             $result->bindParam(':organismo', $this->organismo);
             $result->bindParam(':periodo', $this->periodo);

@@ -49,7 +49,7 @@
                                         <option value="6">Otro</option>
                                     </select>
                                 </div>
-                                <div class="col-2" id="espeficNivel">
+                                <div class="col-2" id="espeficNivel" style="display: none;">
                                     <label for="otroNivel" class="form-label">Especifique Nivel</label>
                                     <input type="text" class="form-control ValidChange" id="otroNivel" name="otroNivel" placeholder="" required>
                                 </div>
@@ -197,7 +197,7 @@
                     var disabled = (ilegalElement > 0)? true: false;
                     $("#agregarCtn").prop( "disabled", disabled );
                 });
-                $("#otroNivel").change(function(){
+                $("#nivel").change(function(){
                     if ($(this).val() == 6) {
                         $('#espeficNivel').show();
                     } else {

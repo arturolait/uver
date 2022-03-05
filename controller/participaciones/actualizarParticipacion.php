@@ -11,7 +11,7 @@ if(isset($_POST["organismo"]) && isset($_POST["periodo"]) && isset($_POST["nivel
     $nivel = $_POST["nivel"];
     $fechaInicio = $_POST["fechaInicio"];
     if ($nivel == 6) {
-        if (empty($_POST["otroNivel"])) {
+        if (isset($_POST["otroNivel"])) {
             $otro = $_POST["otroNivel"];
         } else {
             $arrayResponse["msj"] = "No se especifico la participacion.";
@@ -44,7 +44,7 @@ if(isset($_POST["organismo"]) && isset($_POST["periodo"]) && isset($_POST["nivel
     $participacion->actualizaParticipacion();
     
     $participacion->clearCondicion();
-    $participacion->setCondicion("persona_fkey", $experiencia->getProfesionalKey(), IGUAL, NUMERO);
+    $participacion->setCondicion("persona_fkey", $participacion->getProfesionalKey(), IGUAL, NUMERO);
     $aparticipacion = $participacion->consultaByIdProfesor();
 
     $arrayResponse["msj"] = "Se actualizaron correctamente los datos.";
